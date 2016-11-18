@@ -1,0 +1,48 @@
+{% extends "chat/layout/layout.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div id="text" class="chat-text-container well">
+            </div>
+            <form id="submit-chat">
+                <div class="row">
+                    <div class="col-md-10">
+                        <input type="text" id="msg" class="form-control"/>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="submit" class="btn btn-success btn-block" id="send" value="Send"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        // Note that the path doesn't matter right now; any WebSocket
+        // connection gets bumped over to WebSocket consumers
+        socket = new WebSocket("ws://" + window.location.host + "/chat/?session_key={{ request.session.session_key }}");
+        socket.onmessage = function (e) {
+            msg = JSON.parse(e.data);
+            $("#text").append("<div><b>" + msg.user + ": </b>" + msg.text.replace(/</g, "&lt;").replace(/>/g, "&gt;") + "</div>");
+            $('#text').animate({
+                scrollTop: $('#text').get(0).scrollHeight
+            }, 1);
+        }
+        socket.onopen = function () {
+            $("#submit-chat").submit(function () {
+                socket.send($("#msg").val());
+                $("#msg").val("");
+                return false;
+            })
+        }
+
+    </script>
+{% endblock %}
+{% block css %}
+
+    <link rel="stylesheet" href="{% static "chat/css/chat.scss" %}" type="text/scss" charset="utf-8">
+{% endblock %}

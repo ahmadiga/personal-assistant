@@ -1,0 +1,68 @@
+version: '2'
+services:
+  server:
+    restart: always
+    build:
+      context: ../
+      args:
+        settings: 'django_starterkit.qa'
+    expose:
+      - "8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: 'django_starterkit.qa'
+      DEBUG: 'false'
+    command: /usr/bin/supervisord
+    volumes:
+      - /usr/src/static/server
+    links:
+      - mysql:mysql
+      - memcache:memcache
+    depends_on:
+      - mysql
+      - memcache
+
+  cadvisor:
+    restart: always
+    image: google/cadvisor:latest
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs
+      - /var/run:/var/run
+      - /sys:/sys
+      - /var/lib/docker/:/var/lib/docker
+
+  nginx:
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+    volumes:
+      - /usr/src/dist
+      - /www/static
+    links:
+      - server:server
+    depends_on:
+      - server
+    volumes_from:
+      - server
+
+  mysql:
+    restart: always
+    image: mysql:5.6
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: dbname
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+
+
+  memcache:
+    restart: always
+    image: memcached:latest
+    ports:
+      - "11211:11211"

@@ -1,0 +1,6 @@
+{% load crispy_forms_tags %}
+{% for field in form %}
+    <fieldset class="control-group {% if field.errors %}error{% endif %}">
+        {{ field|as_crispy_field }}
+    </fieldset>
+{% endfor %}
