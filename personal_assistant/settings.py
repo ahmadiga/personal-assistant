@@ -1,5 +1,5 @@
 try:
-    from django_starterkit.common import *
+    from personal_assistant.common import *
 except ImportError:
     pass
 

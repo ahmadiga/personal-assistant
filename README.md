@@ -1,4 +1,4 @@
-# django_starterkit
+# Personal assistant
 
 Base django project structure
 ##Requirements:

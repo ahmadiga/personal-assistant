@@ -1,5 +1,5 @@
 """
-WSGI config for django_starterkit project.
+WSGI config for personal_assistant project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -14,6 +14,6 @@ from django.core.wsgi import get_wsgi_application
 import pymysql
 
 pymysql.install_as_MySQLdb()
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_starterkit.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "personal_assistant.settings")
 
 application = get_wsgi_application()

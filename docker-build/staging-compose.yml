@@ -5,11 +5,11 @@ services:
     build:
       context: ../
       args:
-        settings: 'django_starterkit.qa'
+        settings: 'personal_assistant.qa'
     expose:
       - "8000"
     environment:
-      DJANGO_SETTINGS_MODULE: 'django_starterkit.qa'
+      DJANGO_SETTINGS_MODULE: 'personal_assistant.qa'
       DEBUG: 'false'
     command: /usr/bin/supervisord
     volumes:
