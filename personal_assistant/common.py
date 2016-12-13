@@ -50,11 +50,13 @@ INSTALLED_APPS += [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.slack',
     'anymail',
 ]
 
 # my apps
 INSTALLED_APPS += [
+    'assistant',
     "main",
 ]
 MIDDLEWARE_CLASSES = [
@@ -111,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Amman'
 
 USE_I18N = True
 
@@ -160,5 +162,11 @@ AUTHENTICATION_BACKENDS = [
 DSK_LOGIN_FIELDS = "email_username"
 
 SITE_ID = 1
+
+SOCIALACCOUNT_PROVIDERS = {
+    'slack': {
+        'SCOPE': ['im:read', 'im:write', ]
+    }
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

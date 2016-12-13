@@ -1,0 +1,54 @@
+{% extends "assistant/layout/layout.html" %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+<div class="col-md-3">
+task
+</div>
+<div class="col-md-3">
+{{ project.task }}
+</div>
+<div class="col-md-3">
+ID
+</div>
+<div class="col-md-3">
+{{ project.id }}
+</div>
+</div>
+<div class="row">
+<div class="col-md-3">
+name
+</div>
+<div class="col-md-3">
+{{ project.name }}
+</div>
+<div class="col-md-3">
+toggl id
+</div>
+<div class="col-md-3">
+{{ project.toggl_id }}
+</div>
+</div>
+<div class="row">
+<div class="col-md-3">
+client
+</div>
+<div class="col-md-3">
+{{ project.client }}
+</div>
+<div class="col-md-3">
+slack channel
+</div>
+<div class="col-md-3">
+{{ project.slack_channel }}
+</div>
+</div>
+<div class="row">
+<div class="col-md-3">
+user
+</div>
+<div class="col-md-3">
+{{ project.user }}
+</div>
+</div>
+{% endblock %}

@@ -1,12 +1,23 @@
+import os
+
+import time
 from django.contrib.auth import REDIRECT_FIELD_NAME, authenticate, login as auth_login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
-from django.shortcuts import render, redirect
+from django.db.models import Q
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
+
+from assistant.models import Task
+from main.forms import ProfileForm
+from main.models import Profile
+from main.utils.toggl import Toggl
 
 
 @sensitive_post_parameters()
@@ -48,6 +59,87 @@ def login(request, template_name='registration/login.html',
                   current_app=current_app)
 
 
+# server_1    | [{'channel': 'D1HC3F41E', 'team': 'T02UE0HBX', 'user': 'U02UHRR5A', 'type': 'message', 'ts': '1481467353.000004', 'text': 'test'}]
+
+# server_1    | [{'channel': 'D0B22214H', 'team': 'T02UE0HBX', 'text': 'asd', 'type': 'message', 'user': 'U0A8VQ9EF', 'ts': '1481465397.000014'}]
+# server_1    | {'user': 'U02UHRR5A', 'channel': 'G0441SCJN', 'ts': '1481469188.000021', 'type': 'message', 'team': 'T02UE0HBX', 'text': 'test'}
+
 # Create your views here.
+@login_required
+def dashboard(request, username=None):
+    if username:
+        user = get_object_or_404(User, username=username)
+        dashboard = False
+    else:
+        user = request.user
+        dashboard = True
+    queue_tasks = Task.objects.filter(Q(Q(submitted_for=user) & Q(Q(status="WA") | Q(status="WO"))))
+    active_task = None
+    today_tasks = None
+    get_today_summery_time_entry = None
+    if hasattr(user, "profile") and user.profile.toggl_token:
+        toggl = Toggl(user.profile.toggl_token)
+        active_task = toggl.get_current_time_entry()
+        today_tasks = toggl.get_today_time_entry()
+        get_today_summery_time_entry = toggl.get_today_summery_time_entry()
+
+    return render(request, 'main/dashboard/dashboard.html', {
+        "active_task": active_task,
+        "today_tasks": today_tasks,
+        "queue_tasks": queue_tasks,
+        "dashboard": dashboard,
+        "user": user,
+        "get_today_summery_time_entry": get_today_summery_time_entry,
+    })
+
+
 def index(request):
+    if request.user.is_authenticated():
+        return redirect(reverse("dashboard"))
+    # from slackclient import SlackClient
+    #
+    # slack_token = "<API_TOKEN>"
+    # sc = SlackClient(slack_token)
+    # #
+    # sc.rtm_connect()
+    # if sc.rtm_connect():
+    #     while True:
+    #         messages = sc.rtm_read()
+    #         for message in messages:
+    #             try:
+    #                 print(message)
+    #                 print(message)
+    #                 # if "type" in message and message["type"] == "message" and message["channel"][0] == "D":
+    #                 # sc.rtm_send_message(channel=message["channel"], message="Busy")
+    #             except:
+    #                 print(message)
+    #         time.sleep(1)
+    # else:
+    #     print(sc)
     return render(request, 'main/index.html', {})
+
+
+def manage_profile(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    form = ProfileForm(request.POST or None, instance=profile)
+    if form.is_valid():
+        form.instance.save()
+        form.instance.update_projects()
+        return redirect(reverse('dashboard'))
+    return render(request, 'main/profile/manage_profile.html', {'form': form})
+
+
+def profile_details(request, id=None):
+    profile = get_object_or_404(Profile, pk=id)
+    return render(request, 'main/profile/profile_details.html', {'profile': profile})
+
+
+def list_profile(request):
+    profiles = User.objects.all()
+    return render(request, 'main/profile/list_profile.html', {'profiles': profiles})
+
+
+def update_projects(request):
+    if hasattr(request.user, "profile") and request.user.profile.toggl_token:
+        request.user.profile.update_projects()
+    return redirect(reverse("list_project"))

@@ -1,0 +1,12 @@
+{% extends "main/layout/layout.html" %}
+{% load i18n %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% for item in profiles %}
+                {% include 'main/profile/profile_item.html' %}
+                <hr/>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

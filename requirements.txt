@@ -23,3 +23,4 @@ python-memcached
 asgi_ipc
 django-anymail[mailgun]==0.5
 django-allauth
+slackclient

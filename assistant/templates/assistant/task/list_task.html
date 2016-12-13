@@ -1,0 +1,17 @@
+{% extends "assistant/layout/layout.html" %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+<div class="col-md-3 col-md-offset-9">
+<a class='btn btn-info btn-block' href={% url 'manage_task' %}>{% trans 'Add Task' %}</a>
+</div>
+</div>
+<hr />
+<div class="row">
+<div class="col-md-12">
+{% for item in tasks %}
+{% include 'assistant/task/task_item.html' %}
+{% endfor %}
+</div>
+</div>
+{% endblock %}

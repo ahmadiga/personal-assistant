@@ -1,0 +1,33 @@
+{% load i18n %}
+<div class="row">
+    <div class="col-md-3">
+        {{ item.id }}
+    </div>
+    <div class="col-md-3">
+        {{ item.title }}
+    </div>
+    <div class="col-md-3">
+        {{ item.description }}
+    </div>
+    <div class="col-md-3">
+        {{ item.priority }}
+    </div>
+    <div class="col-md-3">
+        {{ item.estimated_time }}
+    </div>
+    <div class="col-md-3">
+        {{ item.project }}
+    </div>
+    <div class="col-md-3">
+        {{ item.submitted_by }}
+    </div>
+    <div class="col-md-3">
+        {{ item.create_date }}
+    </div>
+    <div class="col-md-3">
+        <div class="btn-group  btn-group-justified" role="group">
+            <a class='btn btn-info' href={% url 'manage_task' item.id %}>{% trans "Edit" %}</a>
+            <a class='btn btn-info' href={% url 'task_details' item.id %}>{% trans "View" %}</a>
+        </div>
+    </div>
+</div>

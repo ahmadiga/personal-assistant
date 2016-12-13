@@ -1,0 +1,10 @@
+{% extends "assistant/layout/layout.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+<div class="col-md-12">
+{% crispy form %}
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "main/layout/layout.html" %}
+{% load i18n %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-3">
+            ID
+        </div>
+        <div class="col-md-3">
+            {{ profile.id }}
+        </div>
+        <div class="col-md-3">
+            slack token
+        </div>
+        <div class="col-md-3">
+            {{ profile.slack_token }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            toggl token
+        </div>
+        <div class="col-md-3">
+            {{ profile.toggl_token }}
+        </div>
+    </div>
+{% endblock %}
