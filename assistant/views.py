@@ -20,7 +20,7 @@ def manage_task(request, username=None):
         user = get_object_or_404(User, username=username)
     else:
         user = request.user
-    form = TaskForm(request.POST or None)
+    form = TaskForm(request.POST or None, user=user)
     if form.is_valid():
         form.instance.submitted_by = request.user
         form.instance.submitted_for = user

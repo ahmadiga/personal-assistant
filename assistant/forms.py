@@ -15,9 +15,12 @@ class TaskForm(ModelForm):
         exclude = ["submitted_for", "submitted_by", "estimated_time", "create_date", "status", "time_entry_id"]
 
     def __init__(self, *args, **kwargs):
+        user = kwargs["user"]
+        kwargs.pop("user")
         super(TaskForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.attrs = {"data-parsley-validate": "data-parsley-validate"}
+        self.fields["project"].queryset = Project.objects.filter(user=user)
         self.helper.layout = Layout(
             Div(
                 Div('title', css_class="col-md-12"),

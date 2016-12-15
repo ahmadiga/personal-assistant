@@ -1,6 +1,9 @@
+import logging
 import os
 
 import time
+
+from allauth.socialaccount.models import SocialToken
 from django.contrib.auth import REDIRECT_FIELD_NAME, authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -18,6 +21,8 @@ from assistant.models import Task
 from main.forms import ProfileForm
 from main.models import Profile
 from main.utils.toggl import Toggl
+
+logger = logging.getLogger('django.channels')
 
 
 @sensitive_post_parameters()
@@ -96,26 +101,6 @@ def dashboard(request, username=None):
 def index(request):
     if request.user.is_authenticated():
         return redirect(reverse("dashboard"))
-    # from slackclient import SlackClient
-    #
-    # slack_token = "<API_TOKEN>"
-    # sc = SlackClient(slack_token)
-    # #
-    # sc.rtm_connect()
-    # if sc.rtm_connect():
-    #     while True:
-    #         messages = sc.rtm_read()
-    #         for message in messages:
-    #             try:
-    #                 print(message)
-    #                 print(message)
-    #                 # if "type" in message and message["type"] == "message" and message["channel"][0] == "D":
-    #                 # sc.rtm_send_message(channel=message["channel"], message="Busy")
-    #             except:
-    #                 print(message)
-    #         time.sleep(1)
-    # else:
-    #     print(sc)
     return render(request, 'main/index.html', {})
 
 

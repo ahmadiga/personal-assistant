@@ -1,8 +1,11 @@
 import datetime
 import json
+import logging
 
 import requests
 from django.utils import timezone
+
+logger = logging.getLogger('django.channels')
 
 
 class Toggl():
@@ -55,6 +58,7 @@ class Toggl():
         }
         r = requests.post("https://www.toggl.com/api/v8/time_entries/start", auth=(self.token, "api_token",),
                           data=json.dumps(context))
+        logger.info(r.text)
         return r.json()["data"]
 
     def stop_time_entry(self, id):
@@ -76,6 +80,9 @@ class Toggl():
             "since": today_date.isoformat() + "+02:00",
             "until": (today_date + datetime.timedelta(days=1)).isoformat() + "+02:00",
             "user_agent": "a.bazadough@sit-mena.com",
+            "user_ids": {
+                me["id"]
+            },
             "grouping": {
                 "projects": "time_entries"
             }

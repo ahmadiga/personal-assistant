@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 
 RUN apt-get update
 RUN apt-get install npm ruby-dev rubygems supervisor -y
+RUN pip install --upgrade pip
 RUN npm install -g bower
 RUN gem update --system
 RUN gem install compass
