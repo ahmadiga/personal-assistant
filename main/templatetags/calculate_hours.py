@@ -15,7 +15,7 @@ logger = logging.getLogger('django.channels')
 @stringfilter
 def calculate_hours(date_string):
     logger.info(date_string)
-    if date_string != "None":
+    if date_string and date_string != "None":
         date_string = int(date_string)
         seconds = floor((date_string / 1000) % 60)
         minutes = floor((date_string / (1000 * 60)) % 60)

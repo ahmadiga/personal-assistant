@@ -87,6 +87,8 @@ def dashboard(request, username=None):
         active_task = toggl.get_current_time_entry()
         today_tasks = toggl.get_today_time_entry()
         get_today_summery_time_entry = toggl.get_today_summery_time_entry()
+        get_average_summery_time_entry = toggl.get_average_summery_time_entry()
+        logger.info(get_today_summery_time_entry)
 
     return render(request, 'main/dashboard/dashboard.html', {
         "active_task": active_task,
@@ -95,6 +97,7 @@ def dashboard(request, username=None):
         "dashboard": dashboard,
         "user": user,
         "get_today_summery_time_entry": get_today_summery_time_entry,
+        "get_average_summery_time_entry": get_average_summery_time_entry,
     })
 
 

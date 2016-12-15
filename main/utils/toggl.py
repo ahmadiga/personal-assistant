@@ -89,3 +89,22 @@ class Toggl():
         }
         r = requests.get("https://toggl.com/reports/api/v2/summary", auth=(self.token, "api_token",), params=context)
         return r.json()
+
+    def get_average_summery_time_entry(self):
+        today_date = datetime.datetime.utcnow().date()
+        today_date = datetime.datetime(today_date.year, today_date.month, today_date.day)
+        me = self.get_me()
+        today_date = datetime.datetime.utcnow().date()
+        today_date = datetime.datetime(today_date.year, today_date.month, today_date.day)
+        context = {
+            "workspace_id": me["workspaces"][0]["id"],
+            "user_agent": "a.bazadough@sit-mena.com",
+            "user_ids": {
+                me["id"]
+            }
+        }
+        r = requests.get("https://toggl.com/reports/api/v2/weekly", auth=(self.token, "api_token",), params=context)
+        output = r.json()
+        count = len(list(filter(None, output["week_totals"])))
+        logger.info(output["week_totals"][-2])
+        return int(output["total_grand"] / count)
