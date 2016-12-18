@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
     url(r'^status/(?P<username>\w+)/$', views.dashboard, name='user_status'),
     url(r'^assistant/', include('assistant.urls')),
+    url(r'^attendance/', include('attendance.urls')),
     url(r'^manage-profile$', views.manage_profile, name='manage_profile'),
     url(r'^profile-details/(\d+)$', views.profile_details, name='profile_details'),
     url(r'^list-profile/$', views.list_profile, name='list_profile'),

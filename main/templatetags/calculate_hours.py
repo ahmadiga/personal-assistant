@@ -25,4 +25,4 @@ def calculate_hours(date_string):
         except ValueError:
             return None
     else:
-        return ""
+        return None

@@ -2,9 +2,18 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 {% block content %}
-<div class="row">
-<div class="col-md-12">
-{% crispy form %}
-</div>
-</div>
+    {% if not is_checkin %}
+        <div class="col-md-12">
+            <div class="alert alert-danger text-center">
+                Please note that am currently outside my working hours at the office<br/>
+                Setting the priority to urgent will automatically issue an overtime request to the HR department</br>
+                (the overtime thing - not implemented yet :p)
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-12">
+            {% crispy form %}
+        </div>
+    </div>
 {% endblock %}

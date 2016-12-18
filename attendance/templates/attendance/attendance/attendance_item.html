@@ -1,0 +1,19 @@
+{% load i18n %}
+{% load calculate_hours %}
+<div class="row">
+    <div class="col-md-3">
+        {{ item.check_in }}
+    </div>
+    <div class="col-md-3">
+        {{ item.check_out }}
+    </div>
+    <div class="col-md-3">
+        {{ attendance.duration|calculate_hours|default_if_none:"N/A" }}
+    </div>
+    <div class="col-md-3">
+        <div class="btn-group  btn-group-justified" role="group">
+            {#            <a class='btn btn-info' href={% url 'manage_attendance' item.id %}>{% trans "Edit" %}</a>#}
+            {#            <a class='btn btn-info' href={% url 'attendance_details' item.id %}>{% trans "View" %}</a>#}
+        </div>
+    </div>
+</div>

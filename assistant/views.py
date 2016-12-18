@@ -6,6 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 # Create your views here.
 from assistant.forms import TaskForm, ProjectForm
 from assistant.models import Task, Project
+from attendance.models import Attendance
 from main.utils.toggl import Toggl
 
 
@@ -20,6 +21,8 @@ def manage_task(request, username=None):
         user = get_object_or_404(User, username=username)
     else:
         user = request.user
+
+    is_checkin = Attendance.objects.filter(check_out=None, user=user)
     form = TaskForm(request.POST or None, user=user)
     if form.is_valid():
         form.instance.submitted_by = request.user
@@ -29,7 +32,7 @@ def manage_task(request, username=None):
             return redirect(reverse('dashboard'))
         else:
             return redirect(reverse('user_status', kwargs={"username": user.username}))
-    return render(request, 'assistant/task/manage_task.html', {'form': form})
+    return render(request, 'assistant/task/manage_task.html', {'form': form, "is_checkin": is_checkin})
 
 
 def task_details(request, id=None):

@@ -1,0 +1,40 @@
+{% extends "attendance/layout/layout.html" %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+<div class="col-md-3">
+ID
+</div>
+<div class="col-md-3">
+{{ attendance.id }}
+</div>
+<div class="col-md-3">
+user
+</div>
+<div class="col-md-3">
+{{ attendance.user }}
+</div>
+</div>
+<div class="row">
+<div class="col-md-3">
+check in
+</div>
+<div class="col-md-3">
+{{ attendance.check_in }}
+</div>
+<div class="col-md-3">
+check out
+</div>
+<div class="col-md-3">
+{{ attendance.check_out }}
+</div>
+</div>
+<div class="row">
+<div class="col-md-3">
+duration
+</div>
+<div class="col-md-3">
+{{ attendance.duration }}
+</div>
+</div>
+{% endblock %}

@@ -109,6 +109,51 @@
                 <div class="panel panel-info text-center">
                     <div class="panel-heading">
                         <h4>
+                            Attendance
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        {% if attendance %}
+                            <table class="table table-responsive table-striped">
+                                latest check in record
+                                <thead>
+                                <tr>
+                                    <th class=" text-center">
+                                        Check in
+                                    </th>
+                                    <th class=" text-center">
+                                        Check out
+                                    </th>
+                                    <th class=" text-center">
+                                        Duration
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tr>
+                                    <td>
+
+                                        {{ attendance.check_in }}
+                                    </td>
+                                    <td>
+
+                                        {{ attendance.check_out }}
+                                    </td>
+                                    <td>
+
+                                        {{ attendance.duration|calculate_hours|default_if_none:"N/A" }}
+                                    </td>
+                                </tr>
+
+                            </table>
+                        {% else %}
+                            No Records
+                        {% endif %}
+
+                    </div>
+                </div>
+                <div class="panel panel-info text-center">
+                    <div class="panel-heading">
+                        <h4>
                             Summery
                         </h4>
                     </div>

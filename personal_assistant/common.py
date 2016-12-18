@@ -56,6 +56,7 @@ INSTALLED_APPS += [
 
 # my apps
 INSTALLED_APPS += [
+    'attendance',
     'assistant',
     "main",
 ]

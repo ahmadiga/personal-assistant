@@ -18,6 +18,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 
 from assistant.models import Task
+from attendance.models import Attendance
 from main.forms import ProfileForm
 from main.models import Profile
 from main.utils.toggl import Toggl
@@ -78,9 +79,11 @@ def dashboard(request, username=None):
     else:
         user = request.user
         dashboard = True
+    attendance = Attendance.objects.filter(user=user).last()
     queue_tasks = Task.objects.filter(Q(Q(submitted_for=user) & Q(Q(status="WA") | Q(status="WO"))))
     active_task = None
     today_tasks = None
+    get_average_summery_time_entry = None
     get_today_summery_time_entry = None
     if hasattr(user, "profile") and user.profile.toggl_token:
         toggl = Toggl(user.profile.toggl_token)
@@ -96,6 +99,7 @@ def dashboard(request, username=None):
         "queue_tasks": queue_tasks,
         "dashboard": dashboard,
         "user": user,
+        "attendance": attendance,
         "get_today_summery_time_entry": get_today_summery_time_entry,
         "get_average_summery_time_entry": get_average_summery_time_entry,
     })

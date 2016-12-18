@@ -4,6 +4,6 @@
     <li><a href="{% url "list_profile" %}">Users</a></li>
     {% if request.user.is_authenticated %}
         <li><a href="{% url "list_project" %}">Projects</a></li>
+        <li><a href="{% url "list_attendance" %}">Attendance</a></li>
     {% endif %}
-
 </ul>
