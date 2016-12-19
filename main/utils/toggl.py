@@ -24,8 +24,8 @@ class Toggl():
             for client in clients:
                 r = requests.get("https://www.toggl.com/api/v8/clients/" + str(client["id"]) + "/projects",
                                  auth=(self.token, "api_token",))
-                # sometimes request.json does not return a list, so this is a small fix
-                if r.json() is list:
+                # sometimes request.json does not return None, so this is a small fix4
+                if r.json() is not None:
                     for project in r.json():
                         projects.append({
                             "name": project["name"],
