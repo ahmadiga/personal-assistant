@@ -3,7 +3,6 @@ import json
 import logging
 
 import requests
-from django.utils import timezone
 
 logger = logging.getLogger('django.channels')
 
@@ -21,15 +20,18 @@ class Toggl():
     def get_projects(self):
         clients = self.get_clients()
         projects = []
-        for client in clients:
-            r = requests.get("https://www.toggl.com/api/v8/clients/" + str(client["id"]) + "/projects",
-                             auth=(self.token, "api_token",))
-            for project in r.json():
-                projects.append({
-                    "name": project["name"],
-                    "client": client["name"],
-                    "id": project["id"],
-                })
+        if self.token:
+            for client in clients:
+                r = requests.get("https://www.toggl.com/api/v8/clients/" + str(client["id"]) + "/projects",
+                                 auth=(self.token, "api_token",))
+                # sometimes request.json does not return None, so this is a small fix4
+                if r.json() is not None:
+                    for project in r.json():
+                        projects.append({
+                            "name": project["name"],
+                            "client": client["name"],
+                            "id": project["id"],
+                        })
         return projects
 
     def get_current_time_entry(self):
