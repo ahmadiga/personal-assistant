@@ -1,0 +1,21 @@
+{% load i18n %}
+<div class="row">
+<div class="col-md-3">
+{{ item.project }}
+</div>
+<div class="col-md-3">
+{{ item.timeentry }}
+</div>
+<div class="col-md-3">
+{{ item.id }}
+</div>
+<div class="col-md-3">
+{{ item.name }}
+</div>
+<div class="col-md-3">
+<div class="btn-group  btn-group-justified" role="group">
+<a class='btn btn-info' href={% url 'manage_client' item.id %}>{% trans "Edit" %}</a>
+<a class='btn btn-info' href={% url 'client_details' item.id %}>{% trans "View" %}</a>
+</div>
+</div>
+</div>

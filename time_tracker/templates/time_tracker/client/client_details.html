@@ -1,0 +1,34 @@
+{% extends "time_tracker/layout/layout.html" %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+<div class="col-md-3">
+project
+</div>
+<div class="col-md-3">
+{{ client.project }}
+</div>
+<div class="col-md-3">
+timeentry
+</div>
+<div class="col-md-3">
+{{ client.timeentry }}
+</div>
+</div>
+<div class="row">
+<div class="col-md-3">
+ID
+</div>
+<div class="col-md-3">
+{{ client.id }}
+</div>
+<div class="col-md-3">
+name
+</div>
+<div class="col-md-3">
+{{ client.name }}
+</div>
+</div>
+<div class="row">
+</div>
+{% endblock %}

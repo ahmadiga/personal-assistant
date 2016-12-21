@@ -33,3 +33,5 @@ Twisted==16.4.0
 txaio==2.5.1
 websocket-client==0.40.0
 zope.interface==4.3.0
+celery==4.0.2
+django-celery-beat==1.0.1

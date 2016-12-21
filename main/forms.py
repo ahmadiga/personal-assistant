@@ -39,8 +39,7 @@ class ProfileForm(ModelForm):
         self.helper.attrs = {"data-parsley-validate": "data-parsley-validate"}
         self.helper.layout = Layout(
             Div(
-                Div('slack_token', css_class="col-md-6"),
-                Div('toggl_token', css_class="col-md-6"),
+                Div('slack_username', css_class="col-md-12"),
                 css_class="row"),
             Div(
                 Div(Div(Submit('save', _('Save Changes'), css_class='btn btn-success btn-block'),

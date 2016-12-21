@@ -13,7 +13,6 @@ DATABASES = {
 }
 STATIC_ROOT = os.path.join(BASE_DIR, '../statics')
 
-
 # ANYMAIL : mailgun configuration
 ANYMAIL = {
     "MAILGUN_API_KEY": "< your api key at mailgun >",

@@ -1,13 +1,19 @@
 import logging
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
+from django.utils import timezone
+from slackclient import SlackClient
+
 from attendance.forms import AttendanceForm
 from attendance.models import Attendance
+from main.templatetags.calculate_hours import calculate_hours
 from main.utils.client_ip import get_client_ip
+from main.utils.slack import post_message_on_channel, get_slack_user
 
 logger = logging.getLogger('django.channels')
 
@@ -35,7 +41,14 @@ def list_attendance(request, id=None):
 @login_required
 def checkin(request):
     if check_allowed_ips(request):
-        attendances = Attendance.objects.create(user=request.user)
+        if not Attendance.objects.filter(check_out=None, user=request.user):
+            attendances = Attendance.objects.create(user=request.user)
+            post_message_on_channel(settings.SLACK_ATTENDANCE_CHANNEL,
+                                    get_slack_user(request.user) + " checked in at SIT office @ " + str(
+                                        timezone.localtime(timezone.now()).strftime(
+                                            "%Y-%m-%d %H:%M")) + "\n for more info please visit" + str(
+                                        request.build_absolute_uri(
+                                            reverse("user_status", kwargs={"username": request.user.username}))))
     return redirect(reverse('list_attendance'))
 
 
@@ -44,6 +57,13 @@ def checkout(request):
     if check_allowed_ips(request):
         attendance = get_object_or_404(Attendance, check_out=None, user=request.user)
         attendance.check_user_out()
+        post_message_on_channel(settings.SLACK_ATTENDANCE_CHANNEL,
+                                get_slack_user(request.user) + " checked out from SIT office @ " + str(
+                                    timezone.localtime(
+                                        timezone.now()).strftime("%Y-%m-%d %H:%M")) + "\n duration: " + calculate_hours(
+                                    int(attendance.duration)) + "\n for more info please visit " + str(
+                                    request.build_absolute_uri(
+                                        reverse("user_status", kwargs={"username": request.user.username}))))
     return redirect(reverse('list_attendance'))
 
 

@@ -11,17 +11,19 @@ from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
-from django.db.models import Q
+from django.db.models import Q, Sum, Avg
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 
-from assistant.models import Task
 from attendance.models import Attendance
 from main.forms import ProfileForm
 from main.models import Profile
+from main.templatetags.time_from import time_from
 from main.utils.toggl import Toggl
+from time_tracker.models import TimeEntry, Task
+import datetime
 
 logger = logging.getLogger('django.channels')
 
@@ -79,29 +81,46 @@ def dashboard(request, username=None):
     else:
         user = request.user
         dashboard = True
+
+    today_date = datetime.datetime.utcnow().date()
+    today_date = datetime.datetime(today_date.year, today_date.month, today_date.day)
+    active_entry = TimeEntry.objects.filter(Q(Q(user=user) & Q(ended_at=None))).first()
+    entries = TimeEntry.objects.filter(
+        Q(Q(user=user) & ~Q(ended_at=None) & Q(
+            Q(started_at__gt=today_date) & Q(started_at__lt=today_date + datetime.timedelta(days=1)))))
+    entries_totals = TimeEntry.objects.values('project__name', 'project__client__name').filter(
+        Q(Q(user=user) & Q(
+            Q(started_at__gt=today_date) & Q(started_at__lt=today_date + datetime.timedelta(days=1))))).annotate(
+        dsum=Sum("duration"))
+    today_totals = TimeEntry.objects.filter(
+        Q(Q(user=user) & Q(
+            Q(started_at__gt=today_date) & Q(started_at__lt=today_date + datetime.timedelta(days=1))))).aggregate(
+        Sum("duration"))
+    week_totals = TimeEntry.objects.filter(
+        Q(Q(user=user) & Q(
+            Q(started_at__lt=today_date) & Q(started_at__gt=today_date - datetime.timedelta(days=7))))).aggregate(
+        Sum("duration"))
+    if today_totals and "duration__sum" in today_totals and today_totals["duration__sum"]:
+        today_totals = today_totals["duration__sum"]
+    else:
+        today_totals = 0
+    if week_totals and "duration__sum" in week_totals and week_totals["duration__sum"]:
+        week_totals = int(week_totals["duration__sum"] / 5)
+    else:
+        week_totals = 0
     attendance = Attendance.objects.filter(user=user).last()
     queue_tasks = Task.objects.filter(Q(Q(submitted_for=user) & Q(Q(status="WA") | Q(status="WO"))))
-    active_task = None
-    today_tasks = None
-    get_average_summery_time_entry = None
-    get_today_summery_time_entry = None
-    if hasattr(user, "profile") and user.profile.toggl_token:
-        toggl = Toggl(user.profile.toggl_token)
-        active_task = toggl.get_current_time_entry()
-        today_tasks = toggl.get_today_time_entry()
-        get_today_summery_time_entry = toggl.get_today_summery_time_entry()
-        get_average_summery_time_entry = toggl.get_average_summery_time_entry()
-        logger.info(get_today_summery_time_entry)
 
     return render(request, 'main/dashboard/dashboard.html', {
-        "active_task": active_task,
-        "today_tasks": today_tasks,
+        "active_task": active_entry,
+        "today_tasks": entries,
         "queue_tasks": queue_tasks,
         "dashboard": dashboard,
         "user": user,
         "attendance": attendance,
-        "get_today_summery_time_entry": get_today_summery_time_entry,
-        "get_average_summery_time_entry": get_average_summery_time_entry,
+        "entries_totals": entries_totals,
+        "today_totals": today_totals,
+        "week_totals": week_totals,
     })
 
 
@@ -116,7 +135,6 @@ def manage_profile(request):
     form = ProfileForm(request.POST or None, instance=profile)
     if form.is_valid():
         form.instance.save()
-        form.instance.update_projects()
         return redirect(reverse('dashboard'))
     return render(request, 'main/profile/manage_profile.html', {'form': form})
 

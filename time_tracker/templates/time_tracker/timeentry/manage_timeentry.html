@@ -1,0 +1,28 @@
+{% extends request.is_ajax|yesno:"layout/ajax_layout.html,time_tracker/layout/layout.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block title %}
+    Add Time Entry
+{% endblock %}
+{% block content %}
+    <div class="row add-entry">
+        <div class="col-md-12">
+            {% crispy form %}
+        </div>
+    </div>
+    <script>
+        $(".add-entry form").submit(function () {
+            $.post($(this).attr("action"), $(this).serialize(), function (data) {
+                if ($(data).find(".add-entry").length > 0)
+                    $(".add-entry").html($(data).find(".add-entry").html());
+                else {
+                    $('#site-modal').modal('hide');
+                    window.location = window.location
+
+                }
+
+            });
+            return false
+        });
+    </script>
+{% endblock %}

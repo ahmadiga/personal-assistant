@@ -1,0 +1,35 @@
+{% extends request.is_ajax|yesno:"layout/ajax_layout.html,time_tracker/layout/layout.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block title %}
+    Request Task
+{% endblock %}
+{% block content %}
+    {% if not is_checkin %}
+        <div class="col-md-12">
+            <div class="alert alert-danger text-center">
+                Please note that am currently outside my working hours at the office<br/>
+                Setting the priority to urgent will automatically issue an overtime request to the HR department</br>
+                (the overtime thing - not implemented yet :p)
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-12">
+            {% crispy form %}
+        </div>
+    </div>
+    <script>
+        $(".add-request form").submit(function () {
+            $.post($(this).attr("action"), $(this).serialize(), function (data) {
+                if ($(data).find(".add-request").length > 0)
+                    $(".add-request").html($(data).find(".add-request").html());
+                else {
+                    $('#site-modal').modal('hide');
+                    window.location = window.location
+                }
+            });
+            return false
+        });
+    </script>
+{% endblock %}

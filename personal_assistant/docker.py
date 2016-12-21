@@ -13,14 +13,15 @@ DATABASES = {
 }
 STATIC_ROOT = os.path.join(BASE_DIR, '../statics')
 
-# channels settings
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        "BACKEND": "asgi_ipc.IPCChannelLayer",
         "ROUTING": "main.routing.channel_routing",
+        "CONFIG": {
+            "prefix": "django",
+        },
     },
 }
-
 # ANYMAIL : mailgun configuration
 ANYMAIL = {
     "MAILGUN_API_KEY": "< your api key at mailgun >",
@@ -28,3 +29,5 @@ ANYMAIL = {
 }
 EMAIL_BACKEND = "anymail.backends.mailgun.MailgunBackend"
 DEFAULT_FROM_EMAIL = " <<your default from email>>"
+
+SITE_URL = "http://192.168.99.100:8000"

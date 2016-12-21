@@ -2,304 +2,294 @@
 {% load i18n %}
 {% load parse_date %}
 {% load calculate_hours %}
+{% load time_from %}
 
 {% block content %}
-    {% if not user.profile.slack_token %}
-        {% if dashboard %}
-            <div class="panel panel-danger text-center">
+    {% if dashboard %}
+        {#            <a href="#">#}
+        {#                Bitch Mode#}
+        {#            </a>#}
+    {% endif %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-success text-center">
                 <div class="panel-heading">
-                    Incomplete Profile
+                    <h4>
+                        Active Task
+                    </h4>
                 </div>
                 <div class="panel-body">
-                    Please Complete your profile to continue
-                </div>
-                <div class="panel-footer">
-                    <a class="btn btn-success" href="{% url "manage_profile" %}">
-                        {% trans "Go to edit my profile" %}
-                    </a>
-                </div>
-            </div>
-        {% else %}
-            <div class="panel panel-danger text-center">
-                <div class="panel-heading">
-                    Incomplete Profile
-                </div>
-                <div class="panel-body">
-                    This user did not completed his profile yet
-                </div>
-                <div class="panel-footer">
-                </div>
-            </div>
-        {% endif %}
-    {% else %}
-        {% if dashboard %}
-            {#            <a href="#">#}
-            {#                Bitch Mode#}
-            {#            </a>#}
-        {% endif %}
-        <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-success text-center">
-                    <div class="panel-heading">
-                        <h4>
-                            Active Task
-                        </h4>
-                    </div>
-                    <div class="panel-body">
-                        {% if active_task %}
-                            Description: {{ active_task.description }}
-                            <br/>
-                            Start at: {{ active_task.start|parse_date|date:"Y-m-d H:i:s" }}
-                            <br/>
-                            Been working since: {{ active_task.start|parse_date|timesince }}
-                        {% else %}
-                            FREEEEEE
-                        {% endif %}
-                    </div>
-                    {% if not dashboard %}
-                        <div class="panel-footer">
-                            <a href="{% url "manage_task" username=user.username %}" class="btn btn-info">Add request to
-                                queue</a>
+                    {% if active_task %}
+                        Title: {{ active_task.title }}
+                        <br/>
+                        Description: {{ active_task.description }}
+                        <br/>
+                        <div>
+                            Duration: <span
+                                id="active-time">{{ active_task.started_at|time_from|calculate_hours }}</span>
                         </div>
+                        {% if dashboard %}
+                            <a href="{% url "end_entry" %}" class="btn btn-warning btn-sm">
+                                <i class="glyphicon glyphicon-stop"></i>
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        Free
+                        {% if dashboard %}
+                            <a class='btn btn-info btn-block' href={% url 'manage_timeentry' %} data-toggle="modal"
+                               data-target="#site-modal">{% trans 'Add TimeEntry' %}</a>
+                        {% endif %}
                     {% endif %}
                 </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>
-                            Today's Tasks
-                        </h4>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-responsive table-striped">
-                            <thead>
-                            <tr>
-                                <th>
-                                    Description
-                                </th>
-                                <th>
-                                    Start at
-                                </th>
-                                <th>
-                                    End at
-                                </th>
-                            </tr>
-                            </thead>
-                            {% for task in today_tasks %}
-                                {% if task.stop %}
-
-                                    <tr>
-                                        <td>
-                                            {{ task.description }}
-                                        </td>
-                                        <td>
-                                            {{ task.start|parse_date|date:"Y-m-d H:i:s" }}
-                                        </td>
-                                        <td>
-                                            {{ task.stop|parse_date|date:"Y-m-d H:i:s" }}
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="panel panel-info text-center">
-                    <div class="panel-heading">
-                        <h4>
-                            Attendance
-                        </h4>
-                    </div>
-                    <div class="panel-body">
-                        {% if attendance %}
-                            <table class="table table-responsive table-striped">
-                                latest check in record
-                                <thead>
-                                <tr>
-                                    <th class=" text-center">
-                                        Check in
-                                    </th>
-                                    <th class=" text-center">
-                                        Check out
-                                    </th>
-                                    <th class=" text-center">
-                                        Duration
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tr>
-                                    <td>
-
-                                        {{ attendance.check_in }}
-                                    </td>
-                                    <td>
-
-                                        {{ attendance.check_out }}
-                                    </td>
-                                    <td>
-
-                                        {{ attendance.duration|calculate_hours|default_if_none:"N/A" }}
-                                    </td>
-                                </tr>
-
-                            </table>
-                        {% else %}
-                            No Records
-                        {% endif %}
-
-                    </div>
-                </div>
-                <div class="panel panel-info text-center">
-                    <div class="panel-heading">
-                        <h4>
-                            Summery
-                        </h4>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-responsive table-striped">
-
-                            <thead>
-                            <tr>
-                                <th class=" text-center">
-                                    Client
-                                </th>
-                                <th class=" text-center">
-                                    Project
-
-                                </th>
-                                <th class=" text-center">
-                                    Total Hours
-                                </th>
-                            </tr>
-                            </thead>
-                            {% for item in get_today_summery_time_entry.data %}
-                                <tr>
-                                    <td>
-
-                                        {{ item.title.client }}
-                                    </td>
-                                    <td>
-
-                                        {{ item.title.project }}
-                                    </td>
-                                    <td>
-
-                                        {{ item.time|calculate_hours }}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            <tfoot>
-                            <tr>
-                                <th class=" text-center">
-                                    Total Working Hours:
-                                </th>
-                                <th class=" text-center">
-                                </th>
-                                <th class=" text-center">
-
-                                    <b>
-                                        {{ get_today_summery_time_entry.total_grand|calculate_hours }}
-                                    </b>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th class=" text-center">
-                                    7 Day Average:
-                                </th>
-                                <th class=" text-center">
-                                </th>
-                                <th class=" text-center">
-
-                                    <b>
-                                        {{ get_average_summery_time_entry|calculate_hours }}
-                                    </b>
-                                </th>
-                            </tr>
-                            </tfoot>
-                        </table>
-
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>
-                            Queued Requests
-                        </h4>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-responsive  table-striped">
-                            <thead>
-                            <tr>
-                                <th>
-                                    Title
-                                </th>
-                                <th>
-                                    Submitted By
-                                </th>
-                                <th>
-                                    Status
-                                </th>
-                                <th>
-                                    Priority
-                                </th>
-                                <th>
-                                    Estimate Time
-                                </th>
-                                <th>
-                                    Submission Date
-                                </th>
-                                {% if dashboard %}
-                                    <th>
-
-                                    </th>
-                                {% endif %}
-                            </tr>
-                            </thead>
-                            {% for task in queue_tasks %}
-                                <tr>
-                                    <td>
-                                        {{ task.title }}
-                                    </td>
-                                    <td>
-                                        {{ task.submitted_by }}
-                                    </td>
-                                    <td>
-                                        {{ task.get_status_display }}
-                                    </td>
-                                    <td>
-                                        {{ task.get_priority_display }}
-                                    </td>
-                                    <td>
-                                        {{ task.estimated_time|default_if_none:"N/A" }}
-                                    </td>
-                                    <td>
-                                        {{ task.create_date|date:"Y-m-d H:i:s" }}
-                                    </td>
-                                    {% if dashboard %}
-                                        <td>
-                                            {% if task.status == "WA" %}
-                                                <a href="{% url "create_toggl_task" task.id %}"
-                                                   class="btn btn-sm btn-success"><i
-                                                        class="glyphicon glyphicon-star"></i></a>
-                                            {% elif task.status == "WO" %}
-                                                <a href="{% url "stop_toggl_task" task.id %}"
-                                                   class="btn btn-sm btn-info"><i
-                                                        class="glyphicon glyphicon-check"></i></a>
-                                            {% endif %}
-                                        </td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
-                        </table>
-                        <a href="{% url "manage_task" username=user.username %}" class="btn btn-info">Add request to
+                {% if not dashboard %}
+                    <div class="panel-footer">
+                        <a href="{% url "manage_task" username=user.username %}" data-toggle="modal"
+                           data-target="#site-modal" class="btn btn-info">Add request to
                             queue</a>
                     </div>
-                </div>
+                {% endif %}
+            </div>
 
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>
+                        Today's Tasks
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-responsive table-striped">
+                        <thead>
+                        <tr>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Start at
+                            </th>
+                            <th>
+                                End at
+                            </th>
+                        </tr>
+                        </thead>
+                        {% for task in today_tasks %}
+
+                            <tr>
+                                <td>
+                                    {{ task.title }}
+                                </td>
+                                <td>
+                                    {{ task.started_at|parse_date|date:"Y-m-d H:i:s" }}
+                                </td>
+                                <td>
+                                    {{ task.ended_at|parse_date|date:"Y-m-d H:i:s" }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
         </div>
-    {% endif %}
+        <div class="col-md-6">
+            <div class="panel panel-info text-center">
+                <div class="panel-heading">
+                    <h4>
+                        Attendance
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    {% if attendance %}
+                        <table class="table table-responsive table-striped">
+                            latest check in record
+                            <thead>
+                            <tr>
+                                <th class=" text-center">
+                                    Check in
+                                </th>
+                                <th class=" text-center">
+                                    Check out
+                                </th>
+                                <th class=" text-center">
+                                    Duration
+                                </th>
+                            </tr>
+                            </thead>
+                            <tr>
+                                <td>
+
+                                    {{ attendance.check_in }}
+                                </td>
+                                <td>
+
+                                    {{ attendance.check_out }}
+                                </td>
+                                <td>
+
+                                    {{ attendance.duration|calculate_hours|default_if_none:"N/A" }}
+                                </td>
+                            </tr>
+
+                        </table>
+                    {% else %}
+                        No Records
+                    {% endif %}
+
+                </div>
+            </div>
+            <div class="panel panel-info text-center">
+                <div class="panel-heading">
+                    <h4>
+                        Summery
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-responsive table-striped">
+
+                        <thead>
+                        <tr>
+                            <th class=" text-center">
+                                Client
+                            </th>
+                            <th class=" text-center">
+                                Project
+
+                            </th>
+                            <th class=" text-center">
+                                Total Hours
+                            </th>
+                        </tr>
+                        </thead>
+                        {% for item in entries_totals %}
+                            <tr>
+                                <td>
+                                    {{ item.project__name }}
+                                </td>
+                                <td>
+                                    {{ item.project__client__name }}
+                                </td>
+                                <td>
+                                    {{ item.dsum|calculate_hours }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tfoot>
+                        <tr>
+                            <th class=" text-center">
+                                Total Working Hours:
+                            </th>
+                            <th class=" text-center">
+                            </th>
+                            <th class=" text-center">
+
+                                <b>
+                                    {{ today_totals|calculate_hours }}
+                                </b>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class=" text-center">
+                                7 Day Average:
+                            </th>
+                            <th class=" text-center">
+                            </th>
+                            <th class=" text-center">
+
+                                <b>
+                                    {{ week_totals|calculate_hours }}
+                                </b>
+                            </th>
+                        </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>
+                        Queued Requests
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-responsive  table-striped">
+                        <thead>
+                        <tr>
+                            <th>
+                                Title
+                            </th>
+                            <th>
+                                Submitted By
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Priority
+                            </th>
+                            <th>
+                                Estimate Time
+                            </th>
+                            <th>
+                                Submission Date
+                            </th>
+                            {% if dashboard %}
+                                <th>
+
+                                </th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        {% for task in queue_tasks %}
+                            <tr>
+                                <td>
+                                    {{ task.title }}
+                                </td>
+                                <td>
+                                    {{ task.submitted_by }}
+                                </td>
+                                <td>
+                                    {{ task.get_status_display }}
+                                </td>
+                                <td>
+                                    {{ task.get_priority_display }}
+                                </td>
+                                <td>
+                                    {{ task.estimated_time|default_if_none:"N/A" }}
+                                </td>
+                                <td>
+                                    {{ task.create_date|date:"Y-m-d H:i:s" }}
+                                </td>
+                                {% if dashboard %}
+                                    <td>
+                                        {% if task.status == "WA" %}
+                                            <a href="{% url "create_toggl_task" task.id %}"
+                                               class="btn btn-sm btn-success"><i
+                                                    class="glyphicon glyphicon-star"></i></a>
+                                        {% elif task.status == "WO" %}
+                                            <a href="{% url "stop_toggl_task" task.id %}"
+                                               class="btn btn-sm btn-info"><i
+                                                    class="glyphicon glyphicon-check"></i></a>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <a href="{% url "manage_task" username=user.username %}" data-toggle="modal"
+                       data-target="#site-modal" class="btn btn-info">Add request to
+                        queue</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        var duration = moment.duration({{ active_task.started_at|time_from }}, 'milliseconds');
+        setInterval(function () {
+            duration = duration.add(1, 'second');
+            $("#active-time").text(pad(duration.hours()) + ":" + pad(duration.minutes()) + ":" + pad(duration.seconds()))
+        }, 1000);
+    </script>
 {% endblock %}

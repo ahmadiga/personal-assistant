@@ -8,7 +8,7 @@
         {{ item.check_out }}
     </div>
     <div class="col-md-3">
-        {{ attendance.duration|calculate_hours|default_if_none:"N/A" }}
+        {{ item.duration|calculate_hours|default_if_none:"N/A" }}
     </div>
     <div class="col-md-3">
         <div class="btn-group  btn-group-justified" role="group">

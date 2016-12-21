@@ -1,0 +1,17 @@
+{% extends "time_tracker/layout/layout.html" %}
+{% load i18n %}
+{% block content %}
+<div class="row">
+<div class="col-md-3 col-md-offset-9">
+<a class='btn btn-info btn-block' href={% url 'manage_client' %}>{% trans 'Add Client' %}</a>
+</div>
+</div>
+<hr />
+<div class="row">
+<div class="col-md-12">
+{% for item in clients %}
+{% include 'time_tracker/client/client_item.html' %}
+{% endfor %}
+</div>
+</div>
+{% endblock %}

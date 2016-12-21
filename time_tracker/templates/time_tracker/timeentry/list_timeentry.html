@@ -1,0 +1,101 @@
+{% extends "time_tracker/layout/layout.html" %}
+{% load i18n %}
+{% load time_from %}
+{% load calculate_hours %}
+{% load parse_date %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Active task
+                </div>
+                <div class="panel-body">
+                    {% if active_entry %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <b>{{ active_entry.title }}</b>
+                                <br/>
+                                <small>
+                                    {{ active_entry.description|default_if_none:"No description" }}
+                                </small>
+                            </div>
+                            <div class="col-md-2">
+                                {{ active_entry.started_at|date:"Y-m-d H:i:s" }}
+                            </div>
+                            <div class="col-md-2">
+                                <div id="active-time">
+                                    {{ active_entry.started_at|time_from|calculate_hours }}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{% url "end_entry" %}" class="btn btn-warning btn-sm">
+                                    <i class="glyphicon glyphicon-stop"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <b>No Active Entries</b>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-md-offset-9">
+            <a class='btn btn-info btn-block' href={% url 'manage_timeentry' %} data-toggle="modal"
+               data-target="#site-modal">{% trans 'Add TimeEntry' %}</a>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-12">
+            {% for key,list_of_entries in output.items %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="pull-left">
+                            {% if today_date ==  key %}
+                                Today
+                            {% else %}
+                                {{ key }}
+                            {% endif %}
+                        </h4>
+                        <h4 class="pull-right">
+                            {% if today_date ==  key %}
+                                <div class="running">
+                            {% else %}
+                                <div>
+                            {% endif %}
+                            {{ list_of_entries.total|calculate_hours }}
+                            </div>
+                        </h4>
+                        <br clear="all"/>
+                    </div>
+                    <div class="panel-body">
+                        {% for item in list_of_entries.items %}
+                            {% include 'time_tracker/timeentry/timeentry_item.html' %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        {% if active_entry %}
+            var duration = moment.duration({{ active_entry.started_at|time_from }}, 'milliseconds');
+
+
+            var total_times = $(".running").text().split(":");
+            total_times = (parseInt(total_times[0]) * 60 * 60) + (parseInt(total_times[1]) * 60) + (parseInt(total_times[2]));
+            var duration2 = moment.duration(total_times, 'seconds');
+            setInterval(function () {
+                duration = duration.add(1, 'second');
+                duration2 = duration2.add(1, 'second');
+                $("#active-time").text(pad(duration.hours()) + ":" + pad(duration.minutes()) + ":" + pad(duration.seconds()));
+                $(".running").text(pad(duration2.hours()) + ":" + pad(duration2.minutes()) + ":" + pad(duration2.seconds()))
+            }, 1000);
+        {% endif %}
+    </script>
+{% endblock %}

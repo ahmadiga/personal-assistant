@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+from kombu import Exchange, Queue
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -52,12 +53,13 @@ INSTALLED_APPS += [
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.slack',
     'anymail',
+    'django_celery_beat',
 ]
 
 # my apps
 INSTALLED_APPS += [
+    'time_tracker',
     'attendance',
-    'assistant',
     "main",
 ]
 MIDDLEWARE_CLASSES = [
@@ -138,6 +140,7 @@ BOWER_PATH = 'bower'
 BOWER_INSTALLED_APPS = (
     'bootstrap#3.3.6',
     'jquery#2.2.3',
+    'moment#2.17.1'
 )
 COMPRESS_PRECOMPILERS = (
     ('text/scss', 'sass --scss --compass {infile} {outfile}'),
@@ -171,3 +174,13 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+SLACK_TOKEN = "<insert slack bot token>"
+SLACK_ATTENDANCE_CHANNEL = "#insert-channel-here"
+# CELERY STUFF
+BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Amman'
