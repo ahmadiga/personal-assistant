@@ -2,6 +2,8 @@ from __future__ import absolute_import, unicode_literals
 import os
 
 import datetime
+
+import pymysql
 from celery import Celery
 from celery.utils.log import get_task_logger
 # set the default Django settings module for the 'celery' program.
@@ -11,6 +13,7 @@ from django.db.models import Q
 from django.utils import timezone
 from main.utils.slack import post_message_on_channel, get_slack_user
 
+pymysql.install_as_MySQLdb()
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'personal_assistant.common')
 
 app = Celery('personal_assistant')

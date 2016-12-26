@@ -87,10 +87,10 @@ def list_timeentry(request, id=None):
         output[timeentry.day]["total"] += timeentry.duration
 
     active_entry = TimeEntry.objects.filter(Q(Q(user=request.user) & Q(ended_at=None))).first()
-    if active_entry:
-        output[str(today_date.date())]["total"] += time_from(active_entry.started_at)
+    if active_entry and today_date.date() in output:
+        output[today_date.date()]["total"] += time_from(active_entry.started_at)
     return render(request, 'time_tracker/timeentry/list_timeentry.html',
-                  {'output': output, "active_entry": active_entry, "today_date": str(today_date.date())})
+                  {'output': output, "active_entry": active_entry, "today_date": today_date.date()})
 
 
 @login_required
@@ -104,7 +104,6 @@ def manage_timeentry(request, id=None):
         form.instance.user = request.user
         form.save()
         return redirect(reverse('list_timeentry'))
-    logger.info(form)
     return render(request, 'time_tracker/timeentry/manage_timeentry.html', {'form': form})
 
 

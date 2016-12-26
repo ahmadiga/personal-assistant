@@ -26,7 +26,7 @@ class Project(models.Model):
     slack_channel = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.name
+        return self.client.name + " - " + self.name
 
 
 class Task(models.Model):
