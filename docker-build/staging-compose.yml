@@ -17,9 +17,11 @@ services:
     links:
       - mysql:mysql
       - memcache:memcache
+      - redis
     depends_on:
       - mysql
       - memcache
+      - redis
 
   cadvisor:
     restart: always
@@ -66,3 +68,9 @@ services:
     image: memcached:latest
     ports:
       - "11211:11211"
+  # Redis
+  redis:
+    image: redis:2.8.19
+    hostname: redis
+    expose:
+      - "6379"

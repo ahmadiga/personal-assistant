@@ -1,7 +1,10 @@
 version: '2'
 services:
   server:
-    image: sitmena/django-starterkit
+    build:
+      context: ../
+      args:
+        settings: 'django_starterkit.settings'
     expose:
       - "8000"
     ports:
@@ -14,6 +17,8 @@ services:
       DJANGO_SETTINGS_MODULE: 'django_starterkit.docker'
       DEBUG: 'true'
     command: python manage.py runserver 0.0.0.0:8000
+    links:
+      - redis
 
   cadvisor:
     restart: always
@@ -27,3 +32,9 @@ services:
       - /var/run:/var/run
       - /sys:/sys
       - /var/lib/docker/:/var/lib/docker
+  # Redis
+  redis:
+    image: redis:2.8.19
+    hostname: redis
+    expose:
+      - "6379"
