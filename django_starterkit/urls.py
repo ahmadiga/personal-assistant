@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.conf import settings
 
 urlpatterns = [
     url(r'^', include('main.urls')),
@@ -24,3 +25,10 @@ urlpatterns = [
     url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'^accounts/', include('allauth.urls')),
 ]
+
+if settings.DEBUG_TOOLBAR_ENABLED:
+    import debug_toolbar
+
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]

@@ -23,6 +23,7 @@ SECRET_KEY = '=%2h+%ebz(7*y6)i8eoycf*ej)3-+tps1e8noajd_%9jvqlc^u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DEBUG_TOOLBAR_ENABLED = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -58,7 +59,8 @@ INSTALLED_APPS += [
     "main",
     'chat',
 ]
-MIDDLEWARE_CLASSES = [
+
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -163,3 +165,23 @@ DSK_LOGIN_FIELDS = "email_username"
 SITE_ID = 1
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# Django debug toolbar settings
+if DEBUG_TOOLBAR_ENABLED:
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+
+
+    def show_toolbar(request):
+        return DEBUG_TOOLBAR_ENABLED
+
+
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+        "SHOW_COLLAPSED": True,
+    }
