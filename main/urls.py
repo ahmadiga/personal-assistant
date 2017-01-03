@@ -4,7 +4,7 @@ from . import views
 from registration.backends.simple import views as registration_views
 
 urlpatterns = [
-    url(r'^accounts/login/$', 'main.views.login',
+    url(r'^accounts/login/$', views.login,
         {'authentication_form': CustomLogin,}, name='registration_login'),
     url(r'^accounts/register/$', registration_views.RegistrationView.as_view(form_class=CustomRegistration),
         name='registration_register'),

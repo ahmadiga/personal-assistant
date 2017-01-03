@@ -44,8 +44,7 @@ def login(request, template_name='registration/login.html',
     }
     if extra_context is not None:
         context.update(extra_context)
-    return render(request, template_name, context,
-                  current_app=current_app)
+    return render(request, template_name, context)
 
 
 # Create your views here.
