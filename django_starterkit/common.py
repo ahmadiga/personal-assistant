@@ -55,6 +55,12 @@ INSTALLED_APPS += [
     'django_celery_beat',
 ]
 
+# Django debug toolbar settings
+if DEBUG_TOOLBAR_ENABLED:
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+
 # my apps
 INSTALLED_APPS += [
     "main",
@@ -167,12 +173,16 @@ SITE_ID = 1
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+# CELERY STUFF
+BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Amman'
+
 # Django debug toolbar settings
 if DEBUG_TOOLBAR_ENABLED:
-    INSTALLED_APPS += [
-        'debug_toolbar',
-    ]
-
     MIDDLEWARE += [
         'debug_toolbar.middleware.DebugToolbarMiddleware',
     ]
@@ -186,11 +196,3 @@ if DEBUG_TOOLBAR_ENABLED:
         "SHOW_TOOLBAR_CALLBACK": show_toolbar,
         "SHOW_COLLAPSED": True,
     }
-
-# CELERY STUFF
-BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Asia/Amman'
