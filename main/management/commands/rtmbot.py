@@ -4,8 +4,8 @@ from django.core.management.base import BaseCommand, CommandError
 import time
 from nltk.chat.util import Chat, reflections
 from slackclient import SlackClient
-
-from main.models import Profile
+from main.models import Profile, MyUser
+from django.db.models import Q, Sum, Avg
 
 
 class Command(BaseCommand):
@@ -107,12 +107,12 @@ class Command(BaseCommand):
     def get_user_current_tasks(self, name, data):
         user_info = self.sc.api_call('users.info', user=name)
         profile = Profile.objects.get(slack_username=user_info["user"]["name"])
-        if profile.user.attendance_set.filter(check_out=None):
-            working_on = profile.user.timeentry_set.filter(ended_at=None).first()
+        if profile.user.attendance_set.filter(check_out__isnull=True):
+            working_on = profile.user.timeentry_set.filter(ended_at__isnull=True).first()
             if working_on:
                 self.outputs.append(
                     [data['channel'],
-                     "<@" +name + "> Currently working on " + working_on.title
+                     "<@" + name + "> Currently working on " + working_on.title
                      ]
                 )
             else:
@@ -133,17 +133,42 @@ class Command(BaseCommand):
     def get_user_attendance(self, name, data):
         user_info = self.sc.api_call('users.info', user=name)
         profile = Profile.objects.get(slack_username=user_info["user"]["name"])
-        if profile.user.attendance_set.filter(check_out=None):
+        if profile.user.attendance_set.filter(check_out__isnull=True):
             self.outputs.append(
                 [data['channel'],
-                 "<@" +name + "> is at the Office"
+                 "<@" + name + "> is at the Office"
                  ]
             )
 
         else:
             self.outputs.append(
                 [data['channel'],
-                 "<@" +name + "> is not at the office now "
+                 "<@" + name + "> is not at the office now "
+                 ]
+            )
+
+    def get_free_users(self, data):
+        free_users = MyUser.objects.filter(
+            Q(~Q(timeentry__ended_at__isnull=True) & Q(attendance__isnull=False) & Q(
+                attendance__check_out__isnull=True))).distinct()
+        str = ""
+        for free_user in free_users:
+            if hasattr(free_user, "profile") and free_user.profile.slack_username:
+                str += "<@" + free_user.profile.slack_username + "> "
+            else:
+                str += free_user.username + " "
+
+        if str:
+            self.outputs.append(
+                [data['channel'],
+                 str + " can help you"
+                 ]
+            )
+
+        else:
+            self.outputs.append(
+                [data['channel'],
+                 "no one can help you now"
                  ]
             )
 
@@ -197,12 +222,30 @@ class Command(BaseCommand):
                 return True
         return False
 
+    def check_if_who_is_free(self, data):
+        regexs = [
+            '(.*(?P<who>anyone|who).*(?P<action>here|free|available|help))',
+        ]
+        for regex in regexs:
+            m = re.search(regex, data['text'])
+            if m:
+                self.outputs.append(
+                    [data['channel'],
+                     "hmm, Let me see"
+                     ]
+                )
+                self.get_free_users(data)
+                return True
+        return False
+
     def handle_message(self, data):
         if "text" in data:
             print(data)
             if self.check_if_user_free(data):
                 return
             if self.check_if_at_office(data):
+                return
+            if self.check_if_who_is_free(data):
                 return
 
             if data['channel'].startswith("D") or "<@U3GB3CH7X>" in data["text"]:

@@ -63,6 +63,10 @@ class TimeEntry(models.Model):
     def __str__(self):
         return self.title
 
+    def recalculate_duration(self):
+        self.duration = int((self.ended_at - self.started_at).total_seconds() * 1000)
+        self.save()
+
     def end_time_entry(self):
         if self.ended_at is None:
             self.ended_at = timezone.now()

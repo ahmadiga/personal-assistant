@@ -3,7 +3,7 @@
 {% block title %}Login{% endblock %}
 {% block content %}
     {% include 'registration/form_errors.html' %}
-    <form method="post" class="well" action="{% url "django.contrib.auth.views.login" %}">{% csrf_token %}
+    <form method="post" class="well" action="{{ LOGIN_URL }}">{% csrf_token %}
 
         {{ form|crispy }}
 

@@ -17,7 +17,7 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: 'personal_assistant.docker'
       DEBUG: 'true'
-    command: /usr/bin/supervisord
+    command: python manage.py runserver 0.0.0.0:8000
 
   cadvisor:
     restart: always

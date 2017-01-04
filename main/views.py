@@ -17,12 +17,13 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 
+from django.utils.dateparse import parse_datetime, parse_date
 from attendance.models import Attendance
 from main.forms import ProfileForm
-from main.models import Profile
+from main.models import Profile, MyUser
 from main.templatetags.time_from import time_from
 from main.utils.toggl import Toggl
-from time_tracker.models import TimeEntry, Task
+from time_tracker.models import TimeEntry, Task, Project
 import datetime
 
 logger = logging.getLogger('django.channels')
@@ -63,8 +64,7 @@ def login(request, template_name='registration/login.html',
     }
     if extra_context is not None:
         context.update(extra_context)
-    return render(request, template_name, context,
-                  current_app=current_app)
+    return render(request, template_name, context)
 
 
 # server_1    | [{'channel': 'D1HC3F41E', 'team': 'T02UE0HBX', 'user': 'U02UHRR5A', 'type': 'message', 'ts': '1481467353.000004', 'text': 'test'}]
@@ -76,22 +76,24 @@ def login(request, template_name='registration/login.html',
 @login_required
 def dashboard(request, username=None):
     if username:
-        user = get_object_or_404(User, username=username)
+        user = get_object_or_404(MyUser, username=username)
         dashboard = False
     else:
-        user = request.user
+        user = get_object_or_404(MyUser, pk=request.user.pk)
         dashboard = True
-
-    today_date = datetime.datetime.utcnow().date()
-    today_date = datetime.datetime(today_date.year, today_date.month, today_date.day)
-    active_entry = TimeEntry.objects.filter(Q(Q(user=user) & Q(ended_at=None))).first()
-    entries = TimeEntry.objects.filter(
-        Q(Q(user=user) & ~Q(ended_at=None) & Q(
-            Q(started_at__gt=today_date) & Q(started_at__lt=today_date + datetime.timedelta(days=1)))))
-    entries_totals = TimeEntry.objects.values('project__name', 'project__client__name').filter(
-        Q(Q(user=user) & Q(
-            Q(started_at__gt=today_date) & Q(started_at__lt=today_date + datetime.timedelta(days=1))))).annotate(
-        dsum=Sum("duration"))
+    if "date" in request.GET:
+        today_date = parse_date(request.GET["date"])
+        today_date = datetime.datetime(today_date.year, today_date.month, today_date.day)
+    else:
+        today_date = datetime.datetime.utcnow().date()
+        today_date = datetime.datetime(today_date.year, today_date.month, today_date.day)
+    active_entry = user.get_today_timeentry()
+    entries = user.get_todat_timeentry(today_date)
+    entries_totals = Project.objects.values('name', 'client__name').filter(
+        Q(Q(timeentry__user=user) & Q(
+            Q(timeentry__started_at__gt=today_date) & Q(
+                timeentry__started_at__lt=today_date + datetime.timedelta(days=1))))).annotate(
+        dsum=Sum("timeentry__duration"))
     today_totals = TimeEntry.objects.filter(
         Q(Q(user=user) & Q(
             Q(started_at__gt=today_date) & Q(started_at__lt=today_date + datetime.timedelta(days=1))))).aggregate(
@@ -121,6 +123,7 @@ def dashboard(request, username=None):
         "entries_totals": entries_totals,
         "today_totals": today_totals,
         "week_totals": week_totals,
+        "today_date": today_date,
     })
 
 
@@ -145,7 +148,7 @@ def profile_details(request, id=None):
 
 
 def list_profile(request):
-    profiles = User.objects.all()
+    profiles = MyUser.objects.all()
     return render(request, 'main/profile/list_profile.html', {'profiles': profiles})
 
 

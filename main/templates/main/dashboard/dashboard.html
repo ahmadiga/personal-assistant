@@ -12,6 +12,18 @@
     {% endif %}
     <div class="row">
         <div class="col-md-6">
+            <h1>
+                {{ user.username }}'s Dashboard
+            </h1>
+        </div>
+        <div class="col-md-6">
+            <div class="pull-right date-dashboard-picker">
+                {{ today_date|date:"Y-m-d H:i" }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
             <div class="panel panel-success text-center">
                 <div class="panel-heading">
                     <h4>
@@ -57,35 +69,9 @@
                     </h4>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-responsive table-striped">
-                        <thead>
-                        <tr>
-                            <th>
-                                Description
-                            </th>
-                            <th>
-                                Start at
-                            </th>
-                            <th>
-                                End at
-                            </th>
-                        </tr>
-                        </thead>
-                        {% for task in today_tasks %}
-
-                            <tr>
-                                <td>
-                                    {{ task.title }}
-                                </td>
-                                <td>
-                                    {{ task.started_at|parse_date|date:"Y-m-d H:i:s" }}
-                                </td>
-                                <td>
-                                    {{ task.ended_at|parse_date|date:"Y-m-d H:i:s" }}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+                    {% for item in today_tasks %}
+                        {% include "time_tracker/timeentry/timeentry_item.html" %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -147,11 +133,11 @@
                         <thead>
                         <tr>
                             <th class=" text-center">
-                                Client
-                            </th>
-                            <th class=" text-center">
                                 Project
 
+                            </th>
+                            <th class=" text-center">
+                                Client
                             </th>
                             <th class=" text-center">
                                 Total Hours
@@ -161,10 +147,10 @@
                         {% for item in entries_totals %}
                             <tr>
                                 <td>
-                                    {{ item.project__name }}
+                                    {{ item.name }}
                                 </td>
                                 <td>
-                                    {{ item.project__client__name }}
+                                    {{ item.client__name }}
                                 </td>
                                 <td>
                                     {{ item.dsum|calculate_hours }}
@@ -263,10 +249,12 @@
                                     <td>
                                         {% if task.status == "WA" %}
                                             <a href="{% url "create_toggl_task" task.id %}"
-                                               class="btn btn-sm btn-success"><i
+                                               class="btn btn-sm btn-success" data-toggle="tooltip"
+                                               title="Start"><i
                                                     class="glyphicon glyphicon-star"></i></a>
                                         {% elif task.status == "WO" %}
-                                            <a href="{% url "stop_toggl_task" task.id %}"
+                                            <a href="{% url "stop_toggl_task" task.id %}" data-toggle="tooltip"
+                                               title="Finish"
                                                class="btn btn-sm btn-info"><i
                                                     class="glyphicon glyphicon-check"></i></a>
                                         {% endif %}
@@ -286,10 +274,22 @@
 {% endblock %}
 {% block js %}
     <script>
-        var duration = moment.duration({{ active_task.started_at|time_from }}, 'milliseconds');
+        var duration = moment.duration({{ active_task.started_at|time_from|default_if_none:0 }}, 'milliseconds');
         setInterval(function () {
             duration = duration.add(1, 'second');
             $("#active-time").text(pad(duration.hours()) + ":" + pad(duration.minutes()) + ":" + pad(duration.seconds()))
         }, 1000);
+
+        $('.date-dashboard-picker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            inline: true,
+            defaultDate: "{{ today_date|date:"Y-m-d" }}"
+        })
+        $(".date-dashboard-picker").on("dp.change", function (e) {
+            var loc = window.location.toString().split("?");
+            loc = loc[0];
+            console.log(loc + "?date=" + e.date.format("YYYY-MM-DD"));
+            window.location = loc + "?date=" + e.date.format("YYYY-MM-DD");
+        });
     </script>
 {% endblock %}

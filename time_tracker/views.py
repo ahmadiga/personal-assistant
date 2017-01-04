@@ -12,7 +12,7 @@ from django.conf import settings
 from attendance.models import Attendance
 from main.templatetags.time_from import time_from
 from main.utils.slack import post_message_on_channel, get_slack_user
-from time_tracker.forms import ClientForm, ProjectForm, TimeEntryForm, TaskForm
+from time_tracker.forms import ClientForm, ProjectForm, TimeEntryForm, TaskForm, UpdateTimeEntryForm
 from time_tracker.models import Client, Project, TimeEntry, Task
 import datetime
 from django.utils import timezone
@@ -95,14 +95,22 @@ def list_timeentry(request, id=None):
 
 @login_required
 def manage_timeentry(request, id=None):
-    if id:
-        timeentry = get_object_or_404(TimeEntry, pk=id)
-    else:
-        timeentry = None
-    form = TimeEntryForm(request.POST or None, instance=timeentry)
+    form = TimeEntryForm(request.POST or None)
     if form.is_valid():
         form.instance.user = request.user
         form.save()
+        return redirect(reverse('list_timeentry'))
+    return render(request, 'time_tracker/timeentry/manage_timeentry.html', {'form': form})
+
+
+@login_required
+def update_timeentry(request, id=None):
+    if id:
+        timeentry = get_object_or_404(TimeEntry, pk=id, user=request.user)
+    form = UpdateTimeEntryForm(request.POST or None, instance=timeentry)
+    if form.is_valid():
+        form.save()
+        form.instance.recalculate_duration()
         return redirect(reverse('list_timeentry'))
     return render(request, 'time_tracker/timeentry/manage_timeentry.html', {'form': form})
 
@@ -117,6 +125,16 @@ def timeentry_details(request, id=None):
 def end_entry(request):
     entry = get_object_or_404(TimeEntry, ended_at=None, user=request.user)
     entry.end_time_entry()
+    return redirect(reverse('list_timeentry'))
+
+
+@login_required
+def rerun_timeentry(request, id=None):
+    entry = get_object_or_404(TimeEntry, pk=id, user=request.user)
+    entry.pk = None
+    entry.duration = None
+    entry.ended_at = None
+    entry.save()  # blog.pk == 2
     return redirect(reverse('list_timeentry'))
 
 

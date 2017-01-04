@@ -25,6 +25,9 @@
         <link rel="stylesheet" href="{% static "bootstrap/dist/css/bootstrap.min.css" %}" type="text/css"
               charset="utf-8">
         <link rel="stylesheet" href="{% static "css/common.scss" %}" type="text/scss" charset="utf-8">
+        <link rel="stylesheet"
+              href="{% static "eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" %}"/>
+
         {% block base_css %}
         {% endblock %}
     {% endcompress %}
@@ -48,8 +51,11 @@
     <script src="{% static "jquery/dist/jquery.min.js" %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static "bootstrap/dist/js/bootstrap.min.js" %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static "parsley/js/parsley.min.js" %}" type="text/javascript" charset="utf-8"></script>
-    <script src="{% static "js/script.js" %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static "moment/moment.js" %}" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript"
+            src="{% static "eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js" %}"></script>
+    <script src="{% static "js/script.js" %}" type="text/javascript" charset="utf-8"></script>
+
     {% block base_js %}
     {% endblock %}
 {% endcompress %}

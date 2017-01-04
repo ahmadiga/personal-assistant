@@ -25,7 +25,7 @@ SECRET_KEY = '=%2h+%ebz(7*y6)i8eoycf*ej)3-+tps1e8noajd_%9jvqlc^u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -54,6 +54,8 @@ INSTALLED_APPS += [
     'allauth.socialaccount.providers.slack',
     'anymail',
     'django_celery_beat',
+    'explorer',
+    'report_builder',
 ]
 
 # my apps
@@ -86,6 +88,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.static',
+                'django.template.context_processors.media'
             ],
         },
     },
@@ -140,7 +144,8 @@ BOWER_PATH = 'bower'
 BOWER_INSTALLED_APPS = (
     'bootstrap#3.3.6',
     'jquery#2.2.3',
-    'moment#2.17.1'
+    'moment#2.17.1',
+    'eonasdan-bootstrap-datetimepicker#latest'
 )
 COMPRESS_PRECOMPILERS = (
     ('text/scss', 'sass --scss --compass {infile} {outfile}'),

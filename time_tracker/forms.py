@@ -81,6 +81,40 @@ class TimeEntryForm(ModelForm):
 
 
 @parsleyfy
+class UpdateTimeEntryForm(ModelForm):
+    class Meta:
+        model = TimeEntry
+        exclude = ["duration", "task", "user"]
+
+    def __init__(self, *args, **kwargs):
+        super(UpdateTimeEntryForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.attrs = {"data-parsley-validate": "data-parsley-validate"}
+        self.helper.form_action = reverse("manage_timeentry", args=(self.instance.id,))
+        self.helper.layout = Layout(
+            Div(
+                Div('title', css_class="col-md-12"),
+                css_class="row"),
+            Div(
+                Div('description', css_class="col-md-12"),
+                css_class="row"),
+            Div(
+                Div('project', css_class="col-md-12"),
+                css_class="row"),
+            Div(
+                Div('started_at', css_class="col-md-12"),
+                css_class="row"),
+            Div(
+                Div('ended_at', css_class="col-md-12"),
+                css_class="row"),
+            Div(
+                Div(Submit('save', _('Save Changes'), css_class='btn btn-success btn-block'),
+                    css_class="col-md-12"),
+                css_class="row"),
+        )
+
+
+@parsleyfy
 class TaskForm(ModelForm):
     class Meta:
         model = Task

@@ -35,12 +35,11 @@ def did_not_check_in():
     from attendance.models import Attendance
     today_date = datetime.datetime.utcnow().date()
     today_date = datetime.datetime(today_date.year, today_date.month, today_date.day)
-    entries = Attendance.objects.filter(
-        Q(Q(
-            Q(check_in__gt=today_date))))
+    from django.contrib.auth.models import User
+    entries = User.objects.filter(Q(attendance=None) | ~Q(attendance__check_out=None)).distinct()
     result = ""
     for entry in entries:
-        result = get_slack_user(entry.user)
+        result += get_slack_user(entry) + " "
 
     if result:
         post_message_on_channel(settings.SLACK_ATTENDANCE_CHANNEL,
@@ -68,9 +67,9 @@ def did_not_start_timer():
     )
     result = ""
     for user in users:
-        result = get_slack_user(user)
+        result += get_slack_user(user) + " "
     print(lastHourDateTime.strftime('%Y-%m-%d %H:%M:%S'))
     if result:
         post_message_on_channel(settings.SLACK_ATTENDANCE_CHANNEL,
-                                result + " did you forget to start your timer! if so please go to " + settings.SITE_URL + str(
+                                result + "did you forget to start your timer! if so please go to " + settings.SITE_URL + str(
                                     reverse("list_timeentry")))

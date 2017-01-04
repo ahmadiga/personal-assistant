@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^explorer/', include('explorer.urls')),
 ]

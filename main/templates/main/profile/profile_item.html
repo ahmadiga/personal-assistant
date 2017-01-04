@@ -1,12 +1,15 @@
 {% load i18n %}
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         {{ item.username }}
     </div>
-    <div class="col-md-4">
-        {{ item.get_full_name }}
+    <div class="col-md-3">
+        {{ item.get_today_timeentry|default_if_none:"Free" }}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
+        {{ item.did_attended_today|yesno:"At the office,Not here" }}
+    </div>
+    <div class="col-md-3">
         <div class="btn-group  btn-group-justified" role="group">
             <a class='btn btn-info' href={% url 'user_status' username=item.username %}>{% trans "View" %}</a>
         </div>
