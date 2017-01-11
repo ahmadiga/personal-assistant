@@ -73,7 +73,9 @@
                     </div>
                     <div class="panel-body">
                         {% for item in list_of_entries.items %}
-                            {% include 'time_tracker/timeentry/timeentry_item.html' %}
+                            {% with dashboard=True %}
+                                {% include 'time_tracker/timeentry/timeentry_item.html' %}
+                            {% endwith %}
                         {% endfor %}
                     </div>
                 </div>

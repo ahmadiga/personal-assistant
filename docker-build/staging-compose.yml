@@ -22,20 +22,6 @@ services:
       - mysql
       - memcache
       - redis
-
-  cadvisor:
-    restart: always
-    image: google/cadvisor:latest
-    expose:
-      - "8080"
-    ports:
-      - "8080:8080"
-    volumes:
-      - /:/rootfs
-      - /var/run:/var/run
-      - /sys:/sys
-      - /var/lib/docker/:/var/lib/docker
-
   nginx:
     restart: always
     build: ./nginx/
@@ -75,3 +61,17 @@ services:
     hostname: redis
     expose:
       - "6379"
+  jenkins:
+    restart: always
+    image: jenkins:latest
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    links:
+      - server:server
+    depends_on:
+      - server
+    volumes_from:
+      - server

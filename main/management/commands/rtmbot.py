@@ -6,6 +6,7 @@ from nltk.chat.util import Chat, reflections
 from slackclient import SlackClient
 from main.models import Profile, MyUser
 from django.db.models import Q, Sum, Avg
+from cleverbot import Cleverbot
 
 
 class Command(BaseCommand):
@@ -85,7 +86,7 @@ class Command(BaseCommand):
               "Change the subject before I die of fatal boredom.")),
 
         )
-        self.rude_chatbot = Chat(self.pairs, reflections)
+        self.rude_chatbot = Cleverbot()
 
     def test(self, txt, txt2):
         print("Asdasdasdasd")
@@ -248,10 +249,11 @@ class Command(BaseCommand):
             if self.check_if_who_is_free(data):
                 return
 
-            if data['channel'].startswith("D") or "<@U3GB3CH7X>" in data["text"]:
+            if data['channel'].startswith("D") or "<@U3GB3CH7X>" in data["text"] or "<!channel>" in data["text"]:
+                msg = re.sub(r'(?P<me><@U3GB3CH7X>\s*|<!channel>\s*)', '', data["text"])
                 self.outputs.append(
                     [data['channel'],
-                     self.rude_chatbot.respond(data['text'])
+                     self.rude_chatbot.ask(msg)
                      ]
                 )
 
