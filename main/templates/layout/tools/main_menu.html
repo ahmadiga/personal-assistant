@@ -1,10 +1,5 @@
 {% load i18n %}
 <ul class="nav navbar-nav">
     <li><a href="{% url "home" %}">Home</a></li>
-    <li><a href="{% url "list_profile" %}">Users</a></li>
-    {% if request.user.is_authenticated %}
-        <li><a href="{% url "list_task" %}">tasks</a></li>
-        <li><a href="{% url "list_attendance" %}">Attendance</a></li>
-        <li><a href="{% url "list_timeentry" %}">Time Entry</a></li>
-    {% endif %}
+
 </ul>

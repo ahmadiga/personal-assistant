@@ -2,19 +2,30 @@
 {% load i18n %}
 
 {% block base_content %}
+    <div class="wrapper">
+
+        {% include "layout/tools/header.html" %}
 
 
-    {% include "layout/tools/header.html" %}
+        {% include "layout/tools/sidebar.html" %}
+        <div class="content-wrapper">
 
-    <div class="container-fluid">
-        {% block layout_content %}
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% block layout_content %}
 
-        {% endblock %}
-        {% include "layout/tools/footer.html" %}
+                        {% endblock %}
+
+
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
         {% include "layout/tools/site-modal.html" %}
-
+        {% include "layout/tools/footer.html" %}
     </div>
-    <!-- /container -->
-
 
 {% endblock %}
