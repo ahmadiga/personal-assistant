@@ -1,27 +1,29 @@
 {% load i18n %}
 <header class="main-header">
     <!-- Logo -->
-    <a href="#" class="logo">
-      <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>MY S</b>ite</span>
+    <a href="{% url "home" %}" class="logo">
+
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini"><b>P</b>A</span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg"><b>Personal</b>Assistant</span>
+
+
     </a>
 
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
-      <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
-         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-            {% include "layout/tools/main_menu.html" %}
-
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
                 {% if request.user.is_authenticated %}
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">{{ request.user }} <span class="caret"></span></a>
-                        <ul class="dropdown-menu" >
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">{{ request.user }} <i class="fa fa-gears"></i></a>
+                        <ul class="dropdown-menu">
                             <li><a href="{% url "manage_profile" %}">{% trans "Edit Profile" %}</a></li>
                             <li><a href="{% url "auth_logout" %}">{% trans "logout" %}</a></li>
                         </ul>
@@ -32,4 +34,4 @@
             </ul>
         </div>
     </nav>
-  </header>
+</header>

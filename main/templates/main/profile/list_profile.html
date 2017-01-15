@@ -1,6 +1,24 @@
 {% extends "main/layout/layout.html" %}
 {% load i18n %}
 {% block content %}
+    <div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                User Name
+            </div>
+            <div class="col-md-3">
+                Time Entry
+            </div>
+            <div class="col-md-3">
+                Attended Today
+            </div>
+            <div class="col-md-3">
+                Actions
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
     <div class="row">
         <div class="col-md-12">
             {% for item in profiles %}
@@ -8,5 +26,7 @@
                 <hr/>
             {% endfor %}
         </div>
+    </div>
+    </div>
     </div>
 {% endblock %}

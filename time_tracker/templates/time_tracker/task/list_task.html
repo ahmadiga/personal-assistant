@@ -2,17 +2,47 @@
 {% load i18n %}
 {% block content %}
     <div class="row">
-        <div class="col-md-3 col-md-offset-9">
-            <a class='btn btn-info btn-block'
+        <div class="col-md-12">
+            <a class='btn btn-info btn-block '
                href={% url 'manage_task' username=request.user.username %}>{% trans 'Add Task' %}</a>
         </div>
     </div>
     <hr/>
-    <div class="row">
-        <div class="col-md-12">
-            {% for item in tasks %}
-                {% include 'time_tracker/task/task_item.html' %}
-            {% endfor %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-2">
+                    Title
+                </div>
+                <div class="col-md-2">
+                    Description
+                </div>
+                <div class="col-md-1">
+                    Priority
+                </div>
+                <div class="col-md-2">
+                    Project
+                </div>
+                <div class="col-md-1">
+                    Submitted By
+                </div>
+                <div class="col-md-2">
+                    Create Date
+                </div>
+                <div class="col-md-2">
+                    Actions
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    {% for item in tasks %}
+                        {% include 'time_tracker/task/task_item.html' %}
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
+
 {% endblock %}
