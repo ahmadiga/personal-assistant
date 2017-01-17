@@ -4,41 +4,37 @@
 {% load calculate_hours %}
 {% load parse_date %}
 {% block content %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Active task
-                </div>
-                <div class="panel-body">
-                    {% if active_entry %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <b>{{ active_entry.title }}</b>
-                                <br/>
-                                <small>
-                                    {{ active_entry.description|default_if_none:"No description" }}
-                                </small>
-                            </div>
-                            <div class="col-md-2">
-                                {{ active_entry.started_at|date:"Y-m-d H:i:s" }}
-                            </div>
-                            <div class="col-md-2">
-                                <div id="active-time">
-                                    {{ active_entry.started_at|time_from|calculate_hours }}
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <a href="{% url "end_entry" %}" class="btn btn-warning btn-sm">
-                                    <i class="glyphicon glyphicon-stop"></i>
-                                </a>
-                            </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Active task
+        </div>
+        <div class="panel-body">
+            {% if active_entry %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <b>{{ active_entry.title }}</b>
+                        <br/>
+                        <small>
+                            {{ active_entry.description|default_if_none:"No description" }}
+                        </small>
+                    </div>
+                    <div class="col-md-2">
+                        {{ active_entry.started_at|date:"Y-m-d H:i:s" }}
+                    </div>
+                    <div class="col-md-2">
+                        <div id="active-time">
+                            {{ active_entry.started_at|time_from|calculate_hours }}
                         </div>
-                    {% else %}
-                        <b>No Active Entries</b>
-                    {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <a href="{% url "end_entry" %}" class="btn btn-warning btn-sm">
+                            <i class="glyphicon glyphicon-stop"></i>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            {% else %}
+                <b>No Active Entries</b>
+            {% endif %}
         </div>
     </div>
     <div class="row">
@@ -47,20 +43,23 @@
                data-target="#site-modal">{% trans 'Add TimeEntry' %}</a>
         </div>
     </div>
-    <hr/>
-    <div class="row">
-        <div class="col-md-12">
-            {% for key,list_of_entries in output.items %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="pull-left">
+    <br clear="all"/>
+
+    {% for key,list_of_entries in output.items %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>
                             {% if today_date ==  key %}
                                 Today
                             {% else %}
                                 {{ key }}
                             {% endif %}
                         </h4>
-                        <h4 class="pull-right">
+                    </div>
+                    <div class="col-md-6">
+                        <h4>
                             {% if today_date ==  key %}
                                 <div class="running">
                             {% else %}
@@ -69,19 +68,16 @@
                             {{ list_of_entries.total|calculate_hours }}
                             </div>
                         </h4>
-                        <br clear="all"/>
-                    </div>
-                    <div class="panel-body">
-                        {% for item in list_of_entries.items %}
-                            {% with dashboard=True %}
-                                {% include 'time_tracker/timeentry/timeentry_item.html' %}
-                            {% endwith %}
-                        {% endfor %}
                     </div>
                 </div>
-            {% endfor %}
+            </div>
+            <div class="panel-body">
+                {% for item in list_of_entries.items %}
+                    {% include 'time_tracker/timeentry/timeentry_item.html' %}
+                {% endfor %}
+            </div>
         </div>
-    </div>
+    {% endfor %}
 {% endblock %}
 {% block js %}
     <script>
