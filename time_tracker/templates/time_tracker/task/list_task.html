@@ -35,13 +35,9 @@
             </div>
         </div>
         <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
-                    {% for item in tasks %}
-                        {% include 'time_tracker/task/task_item.html' %}
-                    {% endfor %}
-                </div>
-            </div>
+            {% for item in tasks %}
+                {% include 'time_tracker/task/task_item.html' %}
+            {% endfor %}
         </div>
     </div>
 
