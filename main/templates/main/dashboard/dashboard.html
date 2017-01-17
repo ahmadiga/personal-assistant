@@ -11,15 +11,14 @@
         {#            </a>#}
     {% endif %}
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-9">
             <h1>
                 {{ user.username }}'s Dashboard
             </h1>
         </div>
-        <div class="col-md-6">
-            <div class="pull-right date-dashboard-picker">
-                {{ today_date|date:"Y-m-d H:i" }}
-            </div>
+        <div class="col-md-3">
+            <input type="text" class="form-control" value="{{ today_date|date:"Y-m-d" }}"
+                   id="date-dashboard-picker"/>
         </div>
     </div>
     <div class="row">
@@ -274,22 +273,23 @@
 {% endblock %}
 {% block js %}
     <script>
-        var duration = moment.duration({{ active_task.started_at|time_from|default_if_none:0 }}, 'milliseconds');
-        setInterval(function () {
-            duration = duration.add(1, 'second');
-            $("#active-time").text(pad(duration.hours()) + ":" + pad(duration.minutes()) + ":" + pad(duration.seconds()))
-        }, 1000);
+        $(function () {
+            var duration = moment.duration({{ active_task.started_at|time_from|default_if_none:0 }}, 'milliseconds');
+            setInterval(function () {
+                duration = duration.add(1, 'second');
+                $("#active-time").text(pad(duration.hours()) + ":" + pad(duration.minutes()) + ":" + pad(duration.seconds()))
+            }, 1000);
 
-        $('.date-dashboard-picker').datetimepicker({
-            format: 'YYYY-MM-DD',
-            inline: true,
-            defaultDate: "{{ today_date|date:"Y-m-d" }}"
-        })
-        $(".date-dashboard-picker").on("dp.change", function (e) {
-            var loc = window.location.toString().split("?");
-            loc = loc[0];
-            console.log(loc + "?date=" + e.date.format("YYYY-MM-DD"));
-            window.location = loc + "?date=" + e.date.format("YYYY-MM-DD");
+            $('#date-dashboard-picker').datetimepicker({
+                format: 'YYYY-MM-DD',
+                defaultDate: "{{ today_date|date:"Y-m-d" }}"
+            })
+            $("#date-dashboard-picker").on("dp.change", function (e) {
+                var loc = window.location.toString().split("?");
+                loc = loc[0];
+                console.log(loc + "?date=" + e.date.format("YYYY-MM-DD"));
+                window.location = loc + "?date=" + e.date.format("YYYY-MM-DD");
+            });
         });
     </script>
 {% endblock %}

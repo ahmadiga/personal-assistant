@@ -139,7 +139,7 @@ def rerun_timeentry(request, id=None):
 
 
 def list_task(request, id=None):
-    tasks = Task.objects.all()
+    tasks = Task.objects.filter(submitted_for=request.user)
     return render(request, 'time_tracker/task/list_task.html', {'tasks': tasks})
 
 

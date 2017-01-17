@@ -83,16 +83,16 @@ class TimeEntry(models.Model):
                         timezone.localtime(timezone.now()).strftime(
                             "%Y-%m-%d %H:%M")) + "\n for more info please visit " + settings.SITE_URL + str(
                         reverse("user_status", kwargs={"username": self.task.submitted_for})))
-            else:
-                post_message_on_channel(
-                    (self.project.slack_channel if self.project else settings.SLACK_ATTENDANCE_CHANNEL),
-                    get_slack_user(
-                        self.user) + " finished working on \"" + self.title + "\" on project " + str(
-                        self.project) + " after " + calculate_hours(
-                        self.duration) + " @ " + str(
-                        timezone.localtime(timezone.now()).strftime(
-                            "%Y-%m-%d %H:%M")) + "\n for more info please visit " + settings.SITE_URL + str(
-                        reverse("user_status", kwargs={"username": self.user})))
+            # else:
+                # post_message_on_channel(
+                #     (self.project.slack_channel if self.project else settings.SLACK_ATTENDANCE_CHANNEL),
+                #     get_slack_user(
+                #         self.user) + " finished working on \"" + self.title + "\" on project " + str(
+                #         self.project) + " after " + calculate_hours(
+                #         self.duration) + " @ " + str(
+                #         timezone.localtime(timezone.now()).strftime(
+                #             "%Y-%m-%d %H:%M")) + "\n for more info please visit " + settings.SITE_URL + str(
+                #         reverse("user_status", kwargs={"username": self.user})))
 
     def stop_running_entries(self):
         active_entry = TimeEntry.objects.filter(Q(Q(user=self.user) & Q(ended_at=None))).first()
@@ -112,14 +112,14 @@ class TimeEntry(models.Model):
                         timezone.localtime(timezone.now()).strftime(
                             "%Y-%m-%d %H:%M")) + "\n for more info please visit " + settings.SITE_URL + str(
                         reverse("user_status", kwargs={"username": self.task.submitted_for})))
-            else:
-                post_message_on_channel(
-                    (self.project.slack_channel if self.project else settings.SLACK_ATTENDANCE_CHANNEL),
-                    get_slack_user(
-                        self.user) + " Start working on \"" + self.title + "\" on project " + str(
-                        self.project) + " @ " + str(
-                        timezone.localtime(timezone.now()).strftime(
-                            "%Y-%m-%d %H:%M")) + "\n for more info please visit " + settings.SITE_URL + str(
-                        reverse("user_status", kwargs={"username": self.user})))
+            # else:
+                # post_message_on_channel(
+                #     (self.project.slack_channel if self.project else settings.SLACK_ATTENDANCE_CHANNEL),
+                #     get_slack_user(
+                #         self.user) + " Start working on \"" + self.title + "\" on project " + str(
+                #         self.project) + " @ " + str(
+                #         timezone.localtime(timezone.now()).strftime(
+                #             "%Y-%m-%d %H:%M")) + "\n for more info please visit " + settings.SITE_URL + str(
+                #         reverse("user_status", kwargs={"username": self.user})))
 
         super(TimeEntry, self).save(*args, **kwargs)

@@ -58,8 +58,6 @@ INSTALLED_APPS += [
     'explorer',
     'report_builder',
 ]
-    'django_celery_beat',
-]
 
 # Django debug toolbar settings
 if DEBUG_TOOLBAR_ENABLED:
@@ -197,7 +195,6 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Amman'
-
 
 # Django debug toolbar settings
 if DEBUG_TOOLBAR_ENABLED:
