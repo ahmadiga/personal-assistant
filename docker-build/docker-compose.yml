@@ -18,6 +18,8 @@ services:
       DJANGO_SETTINGS_MODULE: 'personal_assistant.docker'
       DEBUG: 'true'
     command: python manage.py runserver 0.0.0.0:8000
+    links:
+      - redis
 
   cadvisor:
     restart: always
@@ -31,7 +33,6 @@ services:
       - /var/run:/var/run
       - /sys:/sys
       - /var/lib/docker/:/var/lib/docker
-
   # Redis
   redis:
     image: redis:2.8.19

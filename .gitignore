@@ -53,7 +53,8 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
-web-portal.db
+*.db
+*.sqlite3
 debug.log
 components/
 bower_components/
