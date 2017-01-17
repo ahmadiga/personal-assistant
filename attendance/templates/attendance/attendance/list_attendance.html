@@ -19,8 +19,8 @@
         {% endif %}
     </div>
     <hr/>
-    <div class="row">
-        <div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
             <div class="row">
                 <div class="col-md-3">
                     Check in
@@ -38,10 +38,13 @@
                     </div>
                 </div>
             </div>
-
+        </div>
+        <div class="panel-body">
             {% for item in attendances %}
                 {% include 'attendance/attendance/attendance_item.html' %}
             {% endfor %}
         </div>
     </div>
+
+
 {% endblock %}

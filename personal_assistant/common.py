@@ -152,8 +152,6 @@ STATICFILES_FINDERS = (
 BOWER_COMPONENTS_ROOT = BASE_DIR + '/'
 BOWER_PATH = 'bower'
 BOWER_INSTALLED_APPS = (
-    'bootstrap#3.3.6',
-    'jquery#2.2.3',
     'moment#2.17.1',
     'eonasdan-bootstrap-datetimepicker#latest'
 )

@@ -1,33 +1,28 @@
 {% load i18n %}
+<br/>
 <div class="row">
-    <div class="col-md-3">
-        {{ item.id }}
-    </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         {{ item.title }}
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         {{ item.description }}
     </div>
-    <div class="col-md-3">
-        {{ item.priority }}
+    <div class="col-md-1">
+        {{ item.get_priority_display }}
     </div>
-    <div class="col-md-3">
-        {{ item.estimated_time }}
-    </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         {{ item.project }}
     </div>
-    <div class="col-md-3">
+    <div class="col-md-1">
         {{ item.submitted_by }}
     </div>
-    <div class="col-md-3">
-        {{ item.create_date }}
+    <div class="col-md-2">
+        {{ item.create_date|timesince }}
     </div>
-    <div class="col-md-3">
-        <div class="btn-group  btn-group-justified" role="group">
-            <a class='btn btn-info' href={% url 'manage_task' item.id %}>{% trans "Edit" %}</a>
-            <a class='btn btn-info' href={% url 'task_details' item.id %}>{% trans "View" %}</a>
+    <div class="col-md-2">
+        <div class="btn-group btn-group-sm" role="group">
+            <a class='btn btn-warning btn-sm' href={% url 'manage_task' item.id %}><i class="glyphicon glyphicon-edit"></i></a>
+            <a class='btn btn-info btn-sm' href={% url 'task_details' item.id %}><i class="glyphicon glyphicon-eye-open"></i></a>
         </div>
     </div>
 </div>

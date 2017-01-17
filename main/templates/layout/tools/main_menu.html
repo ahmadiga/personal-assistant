@@ -1,10 +1,9 @@
 {% load i18n %}
-<ul class="nav navbar-nav">
-    <li><a href="{% url "home" %}">Home</a></li>
-    <li><a href="{% url "list_profile" %}">Users</a></li>
+<ul class="sidebar-menu">
+    <li><a href="{% url "list_profile" %}"><i class="fa fa-users"></i><span>Users</span></a></li>
     {% if request.user.is_authenticated %}
-        <li><a href="{% url "list_task" %}">tasks</a></li>
-        <li><a href="{% url "list_attendance" %}">Attendance</a></li>
-        <li><a href="{% url "list_timeentry" %}">Time Entry</a></li>
+        <li><a href="{% url "list_task" %}"><i class="fa fa-check"></i><span>tasks</span></a></li>
+        <li><a href="{% url "list_attendance" %}"><i class="fa fa-flag"></i><span>Attendance</span></a></li>
+        <li><a href="{% url "list_timeentry" %}"><i class="fa fa-clock-o"></i><span>Time Entry</span></a></li>
     {% endif %}
 </ul>
