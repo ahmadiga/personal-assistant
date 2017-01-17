@@ -31,3 +31,22 @@ EMAIL_BACKEND = "anymail.backends.mailgun.MailgunBackend"
 DEFAULT_FROM_EMAIL = " <<your default from email>>"
 
 SITE_URL = "http://192.168.99.100:8000"
+DEBUG_TOOLBAR_ENABLED = True
+
+if DEBUG_TOOLBAR_ENABLED:
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+
+
+    def show_toolbar(request):
+        return DEBUG_TOOLBAR_ENABLED
+
+
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+        "SHOW_COLLAPSED": True,
+    }

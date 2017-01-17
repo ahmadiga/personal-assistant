@@ -54,6 +54,7 @@ LOGGING = {
     },
 }
 DEBUG = False
+DEBUG_TOOLBAR_ENABLED = False
 
 # ANYMAIL : mailgun configuration
 ANYMAIL = {

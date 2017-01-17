@@ -24,7 +24,6 @@ SECRET_KEY = '=%2h+%ebz(7*y6)i8eoycf*ej)3-+tps1e8noajd_%9jvqlc^u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-DEBUG_TOOLBAR_ENABLED = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -60,10 +59,6 @@ INSTALLED_APPS += [
 ]
 
 # Django debug toolbar settings
-if DEBUG_TOOLBAR_ENABLED:
-    INSTALLED_APPS += [
-        'debug_toolbar',
-    ]
 
 # my apps
 INSTALLED_APPS += [
@@ -184,7 +179,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smt`p.EmailBackend'
 
 SLACK_TOKEN = "<insert slack bot token>"
 SLACK_ATTENDANCE_CHANNEL = "#insert-channel-here"
@@ -195,19 +190,3 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Amman'
-
-# Django debug toolbar settings
-if DEBUG_TOOLBAR_ENABLED:
-    MIDDLEWARE += [
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    ]
-
-
-    def show_toolbar(request):
-        return DEBUG_TOOLBAR_ENABLED
-
-
-    DEBUG_TOOLBAR_CONFIG = {
-        "SHOW_TOOLBAR_CALLBACK": show_toolbar,
-        "SHOW_COLLAPSED": True,
-    }
