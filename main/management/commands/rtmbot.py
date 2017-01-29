@@ -86,7 +86,7 @@ class Command(BaseCommand):
               "Change the subject before I die of fatal boredom.")),
 
         )
-        self.rude_chatbot = Cleverbot()
+        self.rude_chatbot = Cleverbot("personal-assistant")
 
     def test(self, txt, txt2):
         print("Asdasdasdasd")

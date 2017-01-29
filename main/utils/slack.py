@@ -15,5 +15,7 @@ def post_message_on_channel(channel, text):
     sc.api_call(
         "chat.postMessage",
         channel=channel,
-        text=text
+        text=text,
+        username="whizz",
+        as_user=True
     )

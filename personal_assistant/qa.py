@@ -63,4 +63,4 @@ ANYMAIL = {
 }
 EMAIL_BACKEND = "anymail.backends.mailgun.MailgunBackend"
 DEFAULT_FROM_EMAIL = " <<your default from email>>"
-SITE_URL = "http://40.118.242.186"
+SITE_URL = "http://whizz.sit-mena.com"

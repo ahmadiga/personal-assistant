@@ -1,30 +1,24 @@
 {% load i18n %}
 {% load calculate_hours %}
 <div class="row">
-    <div class="col-md-6">
-        <div class="row">
-            <div class="col-md-6">
-                <h4>
-                    {{ item.title }} <label class="label label-default">{{ item.project }}</label>
-                </h4>
-            </div>
-            <div class="col-md-4">
-                <h4>
-                    {{ item.description|default_if_none:"No Description"|truncatechars:500 }}
-                </h4>
-            </div>
+    <div class="col-md-4">
+        <div>
+            <b>{{ item.title }}</b> <label class="label label-default">{{ item.project }}</label>
         </div>
+        <small>
+            {{ item.description|default_if_none:"No Description"|truncatechars:500 }}
+        </small>
     </div>
-    <div class="col-md-2">
-       <h4> {{ item.started_at|date:"H:i:s" }} -
-        {{ item.ended_at|date:"H:i:s" }}</h4>
+    <div class="col-md-3">
+        {{ item.started_at|date:"H:i:s" }} -
+            {{ item.ended_at|date:"H:i:s" }}
 
     </div>
     <div class="col-md-2">
-        <h4>{{ item.duration|calculate_hours|default_if_none:"N/A" }}</h4>
+        {{ item.duration|calculate_hours|default_if_none:"N/A" }}
     </div>
-    <div class="col-md-2">
-        <div class="btn-group  btn-group" role="group">
+    <div class="col-md-3">
+        <div class="btn-group  btn-group pull-right" role="group">
             <a class='btn btn-info' href="{% url 'timeentry_details' item.id %}" title="View" data-toggle="tooltip"><i
                     class="glyphicon glyphicon-eye-open"></i></a>
             {% if dashboard  != False %}

@@ -26,7 +26,8 @@ COMPANY_IDS = [
 def check_allowed_ips(request):
     client_ip = get_client_ip(request)
     logger.info(client_ip)
-    return client_ip in COMPANY_IDS
+    # return client_ip in COMPANY_IDS
+    return True
 
 
 @login_required
@@ -46,9 +47,8 @@ def checkin(request):
             post_message_on_channel(settings.SLACK_ATTENDANCE_CHANNEL,
                                     get_slack_user(request.user) + " checked in at SIT office @ " + str(
                                         timezone.localtime(timezone.now()).strftime(
-                                            "%Y-%m-%d %H:%M")) + "\n for more info please visit" + str(
-                                        request.build_absolute_uri(
-                                            reverse("user_status", kwargs={"username": request.user.username}))))
+                                            "%Y-%m-%d %H:%M")) + "\n for more info please visit" + settings.SITE_URL + str(
+                                        reverse("user_status", kwargs={"username": request.user.username})))
     return redirect(reverse('list_attendance'))
 
 
@@ -61,9 +61,10 @@ def checkout(request):
                                 get_slack_user(request.user) + " checked out from SIT office @ " + str(
                                     timezone.localtime(
                                         timezone.now()).strftime("%Y-%m-%d %H:%M")) + "\n duration: " + calculate_hours(
-                                    int(attendance.duration)) + "\n for more info please visit " + str(
-                                    request.build_absolute_uri(
-                                        reverse("user_status", kwargs={"username": request.user.username}))))
+                                    int(
+                                        attendance.duration)) + "\n for more info please visit " + settings.SITE_URL + str(
+                                    reverse("user_status", kwargs={"username": request.user.username})))
+
     return redirect(reverse('list_attendance'))
 
 

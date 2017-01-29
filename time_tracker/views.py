@@ -162,9 +162,8 @@ def manage_task(request, username=None):
                 request.user) + " submitted a " + form.instance.get_priority_display() + " priority request to " + get_slack_user(
                 user) + " on project " + str(form.instance.project.name) + " @ " + str(
                 timezone.localtime(timezone.now()).strftime(
-                    "%Y-%m-%d %H:%M")) + "\n for more info please visit" + str(
-                request.build_absolute_uri(
-                    reverse("user_status", kwargs={"username": user.username}))))
+                    "%Y-%m-%d %H:%M")) + "\n for more info please visit" + settings.SITE_URL + str(
+                reverse("user_status", kwargs={"username": user.username})))
         if user == request.user:
             return redirect(reverse('dashboard'))
         else:
