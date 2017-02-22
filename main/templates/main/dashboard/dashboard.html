@@ -11,10 +11,17 @@
         {#            </a>#}
     {% endif %}
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-6">
             <h1>
                 {{ user.username }}'s Dashboard
             </h1>
+        </div>
+        <div class="col-md-3 col-xs-12">
+             {% if is_checkout %}
+                    <a class='btn btn-info btn-block' href={% url 'attendance_checkout' %}>{% trans 'Checkout' %}</a>
+                {% else %}
+                    <a class='btn btn-info btn-block' href={% url 'attendance_checkin' %}>{% trans 'Checkin' %}</a>
+                {% endif %}
         </div>
         <div class="col-md-3">
             <input type="text" class="form-control" value="{{ today_date|date:"Y-m-d" }}"
