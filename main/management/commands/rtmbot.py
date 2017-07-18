@@ -4,6 +4,8 @@ from django.core.management.base import BaseCommand, CommandError
 import time
 from nltk.chat.util import Chat, reflections
 from slackclient import SlackClient
+
+from main.management.commands.cleverwrap import CleverWrap
 from main.models import Profile, MyUser
 from django.db.models import Q, Sum, Avg
 from cleverbot import Cleverbot
@@ -86,7 +88,7 @@ class Command(BaseCommand):
               "Change the subject before I die of fatal boredom.")),
 
         )
-        self.rude_chatbot = Cleverbot("personal-assistant")
+        self.rude_chatbot = CleverWrap("CC3c5uETuZZM8N4GcclAUE_EIxw")
 
     def test(self, txt, txt2):
         print("Asdasdasdasd")
@@ -253,7 +255,7 @@ class Command(BaseCommand):
                 msg = re.sub(r'(?P<me><@U3GB3CH7X>\s*|<!channel>\s*)', '', data["text"])
                 self.outputs.append(
                     [data['channel'],
-                     self.rude_chatbot.ask(msg)
+                     self.rude_chatbot.say(msg)
                      ]
                 )
 
