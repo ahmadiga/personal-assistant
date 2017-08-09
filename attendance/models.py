@@ -19,4 +19,4 @@ class Attendance(models.Model):
         self.save()
 
     def __str__(self):
-        return self.user + ' - ' + self.check_in
+        return str(self.user) + ' - ' + str(self.check_in)
