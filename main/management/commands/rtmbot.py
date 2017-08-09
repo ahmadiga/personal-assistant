@@ -2,13 +2,20 @@ import re
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 import time
+
+from django.urls import reverse
 from nltk.chat.util import Chat, reflections
 from slackclient import SlackClient
 
+from attendance.models import Attendance
 from main.management.commands.cleverwrap import CleverWrap
 from main.models import Profile, MyUser
 from django.db.models import Q, Sum, Avg
 from cleverbot import Cleverbot
+from django.utils import timezone
+
+from main.templatetags.calculate_hours import calculate_hours
+from main.utils.slack import post_message_on_channel, get_slack_user
 
 
 class Command(BaseCommand):
@@ -241,6 +248,117 @@ class Command(BaseCommand):
                 return True
         return False
 
+    def checkout_user(self, name, data):
+        user_info = self.sc.api_call('users.info', user=name)
+        profile = Profile.objects.get(slack_username=user_info["user"]["name"])
+        if profile:
+            attendance = Attendance.objects.filter(check_out=None, user=profile.user).first()
+            if attendance:
+                attendance.check_user_out()
+                self.outputs.append(
+                    [data['channel'],
+                     "<@" + name + "> Done"
+                     ]
+                )
+                post_message_on_channel(settings.SLACK_ATTENDANCE_CHANNEL,
+                                        get_slack_user(profile.user) + " checked out from SIT office @ " + str(
+                                            timezone.localtime(
+                                                timezone.now()).strftime(
+                                                "%Y-%m-%d %H:%M")) + "\n duration: " + calculate_hours(
+                                            int(
+                                                attendance.duration)) + "\n for more info please visit " + settings.SITE_URL + str(
+                                            reverse("user_status", kwargs={"username": profile.user.username})))
+
+            else:
+                self.outputs.append(
+                    [data['channel'],
+                     "<@" + name + "> You are not checked in"
+                     ]
+                )
+        else:
+            self.outputs.append(
+                [data['channel'],
+                 "<@" + name + "> I dont know which whizz user you are update your profile to let me know"
+                 ]
+            )
+
+    def check_if_checkout(self, data):
+        regexs = [
+            '(?P<action>check me out)',
+        ]
+        for regex in regexs:
+            m = re.search(regex, data['text'])
+            if m:
+                self.outputs.append(
+                    [data['channel'],
+                     "give me a minute"
+                     ]
+                )
+                try:
+                    self.checkout_user(data['user'], data)
+                except:
+                    self.outputs.append(
+                        [data['channel'],
+                         "i don't know him sorry :S"
+                         ]
+                    )
+                return True
+        return False
+
+    def checkin_user(self, name, data):
+        user_info = self.sc.api_call('users.info', user=name)
+        profile = Profile.objects.get(slack_username=user_info["user"]["name"])
+        if profile:
+            if not Attendance.objects.filter(check_out=None, user=profile.user):
+                attendances = Attendance.objects.create(user=profile.user)
+
+                self.outputs.append(
+                    [data['channel'],
+                     "<@" + name + "> Done"
+                     ]
+                )
+                post_message_on_channel(settings.SLACK_ATTENDANCE_CHANNEL,
+                                        get_slack_user(profile.user) + " checked in at SIT office @ " + str(
+                                            timezone.localtime(timezone.now()).strftime(
+                                                "%Y-%m-%d %H:%M")) + "\n for more info please visit" + settings.SITE_URL + str(
+                                            reverse("user_status", kwargs={"username": profile.user.username})))
+            else:
+                self.outputs.append(
+                    [data['channel'],
+                     "<@" + name + "> You are already checked in"
+                     ]
+                )
+        else:
+            self.outputs.append(
+                [data['channel'],
+                 "<@" + name + "> I dont know which whizz user you are update your profile to let me know"
+                 ]
+            )
+
+    def check_if_checkin(self, data):
+        regexs = [
+            '(?P<action>check me in)',
+        ]
+        for regex in regexs:
+            m = re.search(regex, data['text'])
+            if m:
+                self.outputs.append(
+                    [data['channel'],
+                     "give me a minute"
+                     ]
+                )
+                print(data)
+                try:
+                    self.checkin_user(data['user'], data)
+                except:
+                    self.outputs.append(
+                        [data['channel'],
+                         "i don't know him sorry :S"
+                         ]
+                    )
+                return True
+        return False
+
     def handle_message(self, data):
         if "text" in data:
             print(data)
@@ -249,6 +367,10 @@ class Command(BaseCommand):
             if self.check_if_at_office(data):
                 return
             if self.check_if_who_is_free(data):
+                return
+            if (data['channel'].startswith("D") or "<@U3GB3CH7X>" in data["text"]) and self.check_if_checkout(data):
+                return
+            if (data['channel'].startswith("D") or "<@U3GB3CH7X>" in data["text"]) and self.check_if_checkin(data):
                 return
 
             if data['channel'].startswith("D") or "<@U3GB3CH7X>" in data["text"] or "<!channel>" in data["text"]:

@@ -17,3 +17,6 @@ class Attendance(models.Model):
         self.check_out = timezone.now()
         self.duration = (self.check_out - self.check_in).total_seconds() * 1000
         self.save()
+
+    def __str__(self):
+        return self.user + ' - ' + self.check_in
