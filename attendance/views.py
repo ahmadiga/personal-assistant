@@ -4,10 +4,8 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404, redirect
-
 # Create your views here.
 from django.utils import timezone
-from slackclient import SlackClient
 
 from attendance.forms import AttendanceForm
 from attendance.models import Attendance
@@ -43,7 +41,7 @@ def list_attendance(request, id=None):
 def checkin(request):
     if check_allowed_ips(request):
         if not Attendance.objects.filter(check_out=None, user=request.user):
-            attendances = Attendance.objects.create(user=request.user)
+            attendances = Attendance.objects.create(user=request.user, check_in=timezone.now())
             post_message_on_channel(settings.SLACK_ATTENDANCE_CHANNEL,
                                     get_slack_user(request.user) + " checked in at SIT office @ " + str(
                                         timezone.localtime(timezone.now()).strftime(

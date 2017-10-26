@@ -12,7 +12,10 @@
     </div>
     <div class="col-md-3">
         <div class="btn-group  btn-group-justified" role="group">
-            {#            <a class='btn btn-info' href={% url 'manage_attendance' item.id %}>{% trans "Edit" %}</a>#}
+            {% if item.check_out %}
+                <a class='btn btn-info' href={% url 'manage_attendance' item.id %} data-toggle="modal"
+                   data-target="#site-modal">{% trans "Edit" %}</a>
+            {% endif %}
             {#            <a class='btn btn-info' href={% url 'attendance_details' item.id %}>{% trans "View" %}</a>#}
         </div>
     </div>

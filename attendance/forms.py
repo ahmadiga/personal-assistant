@@ -1,6 +1,8 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django.forms import ModelForm
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 from parsley.decorators import parsleyfy
 
 from attendance.models import Attendance
@@ -10,20 +12,17 @@ from attendance.models import Attendance
 class AttendanceForm(ModelForm):
     class Meta:
         model = Attendance
-        exclude = []
+        exclude = ['user', 'duration']
 
     def __init__(self, *args, **kwargs):
         super(AttendanceForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_action = reverse("manage_attendance", args=(self.instance.id,))
         self.helper.attrs = {"data-parsley-validate": "data-parsley-validate"}
         self.helper.layout = Layout(
             Div(
-                Div('user', css_class="col-md-6"),
                 Div('check_in', css_class="col-md-6"),
-                css_class="row"),
-            Div(
                 Div('check_out', css_class="col-md-6"),
-                Div('duration', css_class="col-md-6"),
                 css_class="row"),
             Div(
                 Div(Div(Submit('save', _('Save Changes'), css_class='btn btn-success btn-block'),

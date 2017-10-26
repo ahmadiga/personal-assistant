@@ -1,10 +1,32 @@
-{% extends "attendance/layout/layout.html" %}
+{% extends request.is_ajax|yesno:"layout/ajax_layout.html,time_tracker/layout/layout.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 {% block content %}
-<div class="row">
-<div class="col-md-12">
-{% crispy form %}
-</div>
-</div>
+    <div class="add-request">
+        <div class="row">
+            <div class="col-md-12">
+                {% crispy form %}
+            </div>
+        </div>
+    </div>
+    <script>
+        $(".add-request form").submit(function () {
+            $.post($(this).attr("action"), $(this).serialize(), function (data) {
+                if ($(data).find(".add-request").length > 0)
+                    $(".add-request").html($(data).find(".add-request").html());
+                else {
+                    $('#site-modal').modal('hide');
+                    window.location = window.location
+                }
+            });
+            return false
+        });
+
+        $('#id_check_out').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+        })
+        $('#id_check_in').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+        })
+    </script>
 {% endblock %}

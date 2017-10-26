@@ -1,30 +1,23 @@
+import datetime
 import logging
-import os
 
-import time
-
-from allauth.socialaccount.models import SocialToken
 from django.contrib.auth import REDIRECT_FIELD_NAME, authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
-from django.db.models import Q, Sum, Avg
+from django.db.models import Q, Sum
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.dateparse import parse_date
+from django.utils.timezone import make_aware, get_current_timezone
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 
-from django.utils.dateparse import parse_datetime, parse_date
 from attendance.models import Attendance
 from main.forms import ProfileForm
 from main.models import Profile, MyUser
-from main.templatetags.time_from import time_from
-from main.utils.toggl import Toggl
 from time_tracker.models import TimeEntry, Task, Project
-import datetime
 
 logger = logging.getLogger('django.channels')
 
@@ -83,10 +76,10 @@ def dashboard(request, username=None):
         dashboard = True
     if "date" in request.GET:
         today_date = parse_date(request.GET["date"])
-        today_date = datetime.datetime(today_date.year, today_date.month, today_date.day)
     else:
         today_date = datetime.datetime.utcnow().date()
-        today_date = datetime.datetime(today_date.year, today_date.month, today_date.day)
+    today_date = datetime.datetime(today_date.year, today_date.month, today_date.day)
+    today_date = make_aware(today_date, get_current_timezone(), is_dst=False)
     active_entry = user.get_today_timeentry()
     entries = user.get_todat_timeentry(today_date)
     entries_totals = Project.objects.values('name', 'client__name').filter(
