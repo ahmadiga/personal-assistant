@@ -310,7 +310,7 @@ class Command(BaseCommand):
         profile = Profile.objects.get(slack_username=user_info["user"]["name"])
         if profile:
             if not Attendance.objects.filter(check_out=None, user=profile.user):
-                attendances = Attendance.objects.create(user=profile.user)
+                attendances = Attendance.objects.create(user=profile.user, check_in=timezone.now())
 
                 self.outputs.append(
                     [data['channel'],
