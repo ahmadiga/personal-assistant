@@ -8,7 +8,10 @@ from absence.forms import LeaveForm
 
 
 def list_leave(request, id=None):
-    leaves = Leave.objects.filter(user=request.user).order_by('-submitted_date')
+    if request.user.is_staff:
+        leaves = Leave.objects.all().order_by('-submitted_date')
+    else:
+        leaves = Leave.objects.filter(user=request.user).order_by('-submitted_date')
     return render(request, 'absence/leave_req.html', {'leaves': leaves})
 
 

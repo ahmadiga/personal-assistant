@@ -22,9 +22,6 @@
                     <div class="col-md-1">
                         To date
                     </div>
-                    <div class="col-md-3">
-                        Description
-                    </div>
                     <div class="col-md-1">
                         Status
                     </div>
@@ -56,9 +53,7 @@
                     <div class="col-md-1">
                         {{ leave.pickTo }}
                     </div>
-                    <div class="col-md-3">
-                        {{ leave.description }}
-                    </div>
+
                     <div class="col-md-1">
                         {{ leave.get_status_display }}
                     </div>
@@ -69,6 +64,13 @@
                         </div>
         {% endif %}
                 </div>
+            <div class="row">
+                <div class="col-md-11">
+                    <hr/>
+                    Description: <br/><br/>
+                    {{ leave.description }}
+                </div>
+            </div>
             </div>
     </div>
 {% endblock %}

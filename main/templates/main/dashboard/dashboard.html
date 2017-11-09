@@ -134,11 +134,9 @@
                                 <td>
                                     {{ leave.get_status_display }}
                                 </td>
-                                {% if dashboard %}
                                     <td>
                                         <a href="{% url "leave_detail" leave.id %}" class="btn btn-sm btn-info" title="Details"><i class="glyphicon glyphicon-eye-open"></i></a>
                                     </td>
-                                {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>

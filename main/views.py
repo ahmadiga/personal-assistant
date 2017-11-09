@@ -107,7 +107,10 @@ def dashboard(request, username=None):
     attendance = Attendance.objects.filter(user=user).last()
     queue_tasks = Task.objects.filter(Q(Q(submitted_for=user) & Q(Q(status="WA") | Q(status="WO"))))
 
-    leaves = Leave.objects.filter(user=request.user).order_by('-submitted_date')[0:5]
+    if request.user.is_staff:
+        leaves = Leave.objects.all().order_by('-submitted_date')
+    else:
+        leaves = Leave.objects.filter(user=request.user).order_by('-submitted_date')[0:5]
 
     return render(request, 'main/dashboard/dashboard.html', {
         "active_task": active_entry,
