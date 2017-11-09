@@ -1,0 +1,48 @@
+{% extends "absence/layout/layout.html" %}
+{% load i18n %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <a class='btn btn-info btn-block' data-toggle="modal" data-target="#site-modal"
+               href= {% url 'new_leave' %} >{% trans 'New Leave Request' %}
+            </a>
+        </div>
+    </div>
+    <hr/>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-2">
+                    Absence Type
+                </div>
+                <div class="col-md-2">
+                    Submission Date
+                </div>
+                <div class="col-md-1">
+                    Submitted by
+                </div>
+                <div class="col-md-1">
+                    From date
+                </div>
+                <div class="col-md-1">
+                    To date
+                </div>
+                <div class="col-md-3">
+                    Description
+                </div>
+                <div class="col-md-1">
+                    Status
+                </div>
+                <div class="col-md-1">
+                    Details
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+         {% for leave in leaves %}
+             {% include 'absence/leave_item.html' %}
+         {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

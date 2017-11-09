@@ -19,6 +19,8 @@
             {% crispy form %}
         </div>
     </div>
+
+
     <script>
         $(".add-request form").submit(function () {
             $.post($(this).attr("action"), $(this).serialize(), function (data) {

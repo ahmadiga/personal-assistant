@@ -1,0 +1,46 @@
+{% extends request.is_ajax|yesno:"layout/ajax_layout.html,absence/layout/layout.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+    {% block title %}
+        Absence Request
+    {% endblock %}
+    {% block content %}
+        {% if not is_checkin %}
+            <div class="col-md-12">
+                <div class="alert alert-danger text-center">
+                    Filling The Form Below To Request For An Absence
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-12 add-request">
+                {% crispy form %}
+            </div>
+        </div>
+
+
+        <script>
+            $(".add-request form").submit(function () {
+                $.post($(this).attr("action"), $(this).serialize(), function (data) {
+                    if ($(data).find(".add-request").length > 0)
+                        $(".add-request").html($(data).find(".add-request").html());
+                    else {
+                        $('#new_leave').modal('hide');
+                        window.location = window.location
+                    }
+                });
+                return false
+            });
+                $('#id_pickFrom').datetimepicker({
+                    format: 'YYYY-M-D',
+                    defaultDate: "{{ today_date|date:"YYYY-M-D" }}"
+                });
+                $('#id_pickTo').datetimepicker({
+                    format: 'YYYY-M-D',
+                    defaultDate: "{{ today_date|date:"YYYY-M-D" }}"
+                });
+        </script>
+
+    {% endblock %}
+
+

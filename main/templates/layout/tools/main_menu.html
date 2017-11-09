@@ -5,6 +5,9 @@
         <li><a href="{% url "list_task" %}"><i class="fa fa-check"></i><span>Requests</span></a></li>
         <li><a href="{% url "list_attendance" %}"><i class="fa fa-flag"></i><span>Attendance</span></a></li>
         <li><a href="{% url "list_timeentry" %}"><i class="fa fa-clock-o"></i><span>Time Entry</span></a></li>
+        <li><a href={% url 'leave_req' %}><i class="glyphicon glyphicon-pencil"></i><span>Absence</span>
+            </a>
+        </li>
     {% endif %}
     <li><a href="{% url "list_profile" %}"><i class="fa fa-users"></i><span>Users</span></a></li>
 </ul>

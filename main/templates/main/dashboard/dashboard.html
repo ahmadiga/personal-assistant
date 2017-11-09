@@ -80,6 +80,75 @@
                     {% endfor %}
                 </div>
             </div>
+
+        <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>
+                        Latest Absence Requests
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-responsive table-striped">
+                        <thead>
+                        <tr>
+                            <th>
+                                Type
+                            </th>
+                            <th>
+                                Submission Date
+                            </th>
+                            <th>
+                                Submitted By
+                            </th>
+                            <th>
+                                From date
+                            </th>
+                            <th>
+                                To date
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Details
+                            </th>
+                        </thead>
+                        <tbody>
+                        {% for leave in leaves %}
+                            <tr>
+                                <td>
+                                    {{ leave.get_type_display }}
+                                </td>
+                                <td>
+                                    {{ leave.submitted_date|date:"Y-m-d H:i:s" }}
+                                </td>
+                                <td>
+                                    {{ leave.user }}
+                                </td>
+                                <td>
+                                    {{ leave.pickFrom }}
+                                </td>
+                                <td>
+                                    {{ leave.pickTo }}
+                                </td>
+                                <td>
+                                    {{ leave.get_status_display }}
+                                </td>
+                                {% if dashboard %}
+                                    <td>
+                                        <a href="{% url "leave_detail" leave.id %}" class="btn btn-sm btn-info" title="Details"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="{% url "new_leave" %}" data-toggle="modal"
+                       data-target="#new_leave" class="btn btn-info "> Add absence request
+                    </a>
+                </div>
+            </div>
+
         </div>
         <div class="col-md-6">
             <div class="panel panel-info text-center">
@@ -275,10 +344,12 @@
                 </div>
             </div>
 
+
         </div>
     </div>
 {% endblock %}
 {% block js %}
+
     <script>
         $(function () {
             var duration = moment.duration({{ active_task.started_at|time_from|default_if_none:0 }}, 'milliseconds');

@@ -14,6 +14,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 
+from absence.models import Leave
 from attendance.models import Attendance
 from main.forms import ProfileForm
 from main.models import Profile, MyUser
@@ -106,6 +107,8 @@ def dashboard(request, username=None):
     attendance = Attendance.objects.filter(user=user).last()
     queue_tasks = Task.objects.filter(Q(Q(submitted_for=user) & Q(Q(status="WA") | Q(status="WO"))))
 
+    leaves = Leave.objects.filter(user=request.user).order_by('-submitted_date')[0:5]
+
     return render(request, 'main/dashboard/dashboard.html', {
         "active_task": active_entry,
         "today_tasks": entries,
@@ -117,6 +120,8 @@ def dashboard(request, username=None):
         "today_totals": today_totals,
         "week_totals": week_totals,
         "today_date": today_date,
+        "leaves": leaves,
+
     })
 
 

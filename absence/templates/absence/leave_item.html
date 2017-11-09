@@ -1,0 +1,28 @@
+{% load i18n %}
+<br/>
+    <div class="row">
+        <div class="col-md-2">
+            {{ leave.get_type_display }}
+        </div>
+        <div class="col-md-2">
+            {{ leave.submitted_date }}
+        </div>
+        <div class="col-md-1">
+            {{ leave.user }}
+        </div>
+        <div class="col-md-1">
+            {{ leave.pickFrom }}
+        </div>
+        <div class="col-md-1">
+            {{ leave.pickTo }}
+        </div>
+        <div class="col-md-3">
+            {{ leave.description }}
+        </div>
+        <div class="col-md-1">
+            {{ leave.get_status_display }}
+        </div >
+        <div class="col-md-1">
+        <a href="{% url "leave_detail" leave.id %}" class="btn btn-sm btn-info" title="Details"><i class="glyphicon glyphicon-eye-open"></i></a>
+        </div>
+    </div>

@@ -1,0 +1,74 @@
+{% extends 'absence/layout/layout.html' %}
+{% load i18n %}
+{% block content %}
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-1">
+                        ID
+                    </div>
+                    <div class="col-md-1">
+                        Leave Type
+                    </div>
+                    <div class="col-md-2">
+                        Submission Date
+                    </div>
+                    <div class="col-md-1">
+                        Submitted by
+                    </div>
+                    <div class="col-md-1">
+                        From date
+                    </div>
+                    <div class="col-md-1">
+                        To date
+                    </div>
+                    <div class="col-md-3">
+                        Description
+                    </div>
+                    <div class="col-md-1">
+                        Status
+                    </div>
+                    {% if user.is_staff %}
+                    <div class="col-md-1">
+                        Action
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-1">
+                        {{ leave.id }}
+                    </div>
+                    <div class="col-md-1">
+                        {{ leave.get_type_display }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ leave.submitted_date }}
+                    </div>
+                    <div class="col-md-1">
+                        {{ leave.user }}
+                    </div>
+                    <div class="col-md-1">
+                        {{ leave.pickFrom }}
+                    </div>
+                    <div class="col-md-1">
+                        {{ leave.pickTo }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ leave.description }}
+                    </div>
+                    <div class="col-md-1">
+                        {{ leave.get_status_display }}
+                    </div>
+                    {% if user.is_staff %}
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url "leave_action" leave.id "AP" %}" class="btn btn-sm btn-info" title="Approve"><i class="glyphicon glyphicon-ok"></i></a>
+                            <a href="{% url "leave_action" leave.id "DA" %}" class="btn btn-sm btn-info" title="Disapprove"><i class="glyphicon glyphicon-remove"></i></a>
+                        </div>
+        {% endif %}
+                </div>
+            </div>
+    </div>
+{% endblock %}

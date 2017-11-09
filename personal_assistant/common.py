@@ -56,6 +56,7 @@ INSTALLED_APPS += [
     'django_celery_beat',
     'explorer',
     'report_builder',
+    'bootstrap3_datepicker',
 ]
 
 # Django debug toolbar settings
@@ -65,6 +66,7 @@ INSTALLED_APPS += [
     'time_tracker',
     'attendance',
     "main",
+    "absence",
 ]
 
 MIDDLEWARE = [
