@@ -7,7 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse
 from django.db.models import Q, Sum
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, render_to_response
+from django.template import RequestContext
 from django.utils.dateparse import parse_date
 from django.utils.timezone import make_aware, get_current_timezone
 from django.views.decorators.cache import never_cache
@@ -65,6 +66,7 @@ def login(request, template_name='registration/login.html',
 
 # server_1    | [{'channel': 'D0B22214H', 'team': 'T02UE0HBX', 'text': 'asd', 'type': 'message', 'user': 'U0A8VQ9EF', 'ts': '1481465397.000014'}]
 # server_1    | {'user': 'U02UHRR5A', 'channel': 'G0441SCJN', 'ts': '1481469188.000021', 'type': 'message', 'team': 'T02UE0HBX', 'text': 'test'}
+
 
 # Create your views here.
 @login_required

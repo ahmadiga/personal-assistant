@@ -97,9 +97,11 @@
                             <th>
                                 Submission Date
                             </th>
+                            {% if user.is_staff %}
                             <th>
                                 Submitted By
                             </th>
+                            {% endif %}
                             <th>
                                 From date
                             </th>
@@ -122,9 +124,11 @@
                                 <td>
                                     {{ leave.submitted_date|date:"Y-m-d H:i:s" }}
                                 </td>
+                                {% if user.is_staff %}
                                 <td>
                                     {{ leave.user }}
                                 </td>
+                                {% endif %}
                                 <td>
                                     {{ leave.pickFrom }}
                                 </td>

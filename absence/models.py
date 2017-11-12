@@ -9,9 +9,12 @@ from django.utils import timezone
 class Leave(models.Model):
     user = models.ForeignKey(User)
     type = models.CharField(max_length=2,
-                                choices =(("SL", "Sick Leave"), ("TL", "Temporary Leave"), ("PL", "Personal Leave"), ("AW", "Adverse Weather"),))
+                                choices =(("SL", "Sick Leave"), ("TL", "Temporary Leave"),
+                                          ("PL", "Personal Leave"), ("AW", "Adverse Weather"),
+                                          ("ML","Maternity leave"),))
     day = models.CharField(max_length=2,
-                           choices=(("Su", "Sunday"),("Mo", "Modnday"),("Tu", "Tuesday"),("We", "Wednesday"),("Te", "Thursday"),))
+                           choices=(("Su", "Sunday"),("Mo", "Modnday"),("Tu", "Tuesday"),
+                                    ("We", "Wednesday"),("Te", "Thursday"),))
     description = models.TextField(null=True, blank=True)
     submitted_date = models.DateTimeField(auto_now_add=True)
     estimated_time = models.DurationField(null=True, blank=True)

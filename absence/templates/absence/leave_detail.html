@@ -13,9 +13,11 @@
                     <div class="col-md-2">
                         Submission Date
                     </div>
+                {% if user.is_staff %}
                     <div class="col-md-1">
                         Submitted by
                     </div>
+                {% endif %}
                     <div class="col-md-1">
                         From date
                     </div>
@@ -44,16 +46,17 @@
                     <div class="col-md-2">
                         {{ leave.submitted_date }}
                     </div>
+                {% if user.is_staff %}
                     <div class="col-md-1">
                         {{ leave.user }}
                     </div>
+                {% endif %}
                     <div class="col-md-1">
                         {{ leave.pickFrom }}
                     </div>
                     <div class="col-md-1">
                         {{ leave.pickTo }}
                     </div>
-
                     <div class="col-md-1">
                         {{ leave.get_status_display }}
                     </div>
@@ -67,7 +70,7 @@
             <div class="row">
                 <div class="col-md-11">
                     <hr/>
-                    Description: <br/><br/>
+                    <b>Description:</b><br/><br/>
                     {{ leave.description }}
                 </div>
             </div>
