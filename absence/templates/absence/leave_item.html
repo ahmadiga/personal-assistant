@@ -7,9 +7,11 @@
         <div class="col-md-2">
             {{ leave.submitted_date }}
         </div>
+        {% if user.is_staff %}
         <div class="col-md-1">
             {{ leave.user }}
         </div>
+        {% endif %}
         <div class="col-md-1">
             {{ leave.pickFrom }}
         </div>
@@ -18,7 +20,10 @@
         </div>
         <div class="col-md-1">
             {{ leave.get_status_display }}
-        </div >
+        </div>
+        <div class="col-md-1">
+            {{ leave.approved_by }}
+        </div>
         <div class="col-md-1">
         <a href="{% url "leave_detail" leave.id %}" class="btn btn-sm btn-info" title="Details"><i class="glyphicon glyphicon-eye-open"></i></a>
         </div>

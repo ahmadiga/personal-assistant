@@ -29,14 +29,16 @@ def new_leave(request):
         form.save()
         return HttpResponse('success')
 
-    return render(request,'absence/new_leave.html',{'form': form })
+    return render(request, 'absence/new_leave.html', {'form': form})
 
 
-def leave_action(request, id,status):
+def leave_action(request, id, status):
     leave = get_object_or_404(Leave, pk=id)
     if status == "AP":
         leave.status = "AP"
+        leave.approved_by = request.user
     elif status == "DA":
         leave.status = "DA"
+        leave.approved_by = request.user
     leave.save()
     return redirect(reverse('leave_req'))

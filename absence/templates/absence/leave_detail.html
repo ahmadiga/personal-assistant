@@ -27,6 +27,9 @@
                     <div class="col-md-1">
                         Status
                     </div>
+                    <div class="col-md-1">
+                        Approved by
+                    </div>
                     {% if user.is_staff %}
                     <div class="col-md-1">
                         Action
@@ -59,6 +62,9 @@
                     </div>
                     <div class="col-md-1">
                         {{ leave.get_status_display }}
+                    </div>
+                    <div class="col-md-1">
+                        {{ leave.approved_by }}
                     </div>
                     {% if user.is_staff %}
                         <div class="btn-group btn-group-sm" role="group">

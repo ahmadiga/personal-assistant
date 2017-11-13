@@ -110,7 +110,7 @@ def dashboard(request, username=None):
     queue_tasks = Task.objects.filter(Q(Q(submitted_for=user) & Q(Q(status="WA") | Q(status="WO"))))
 
     if request.user.is_staff:
-        leaves = Leave.objects.all().order_by('-submitted_date')
+        leaves = Leave.objects.all().order_by('-submitted_date')[0:5]
     else:
         leaves = Leave.objects.filter(user=request.user).order_by('-submitted_date')[0:5]
 

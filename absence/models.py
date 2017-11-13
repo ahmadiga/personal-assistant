@@ -22,6 +22,7 @@ class Leave(models.Model):
     pickTo = models.CharField(max_length=200, default=timezone.now())
     status = models.CharField(max_length=2, default="PE",
                               choices=(("AP", "Approve"), ("DA", "Disapprove"), ("PE", "Pending"),))
+    approved_by = models.ForeignKey(User,related_name='approved_by',null=True,blank=True)
 
     def submit(self):
         self.submitted_date = timezone.now()
