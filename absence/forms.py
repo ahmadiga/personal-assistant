@@ -1,3 +1,4 @@
+import django_filters
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, Fieldset, Field
 from django import forms
@@ -6,7 +7,16 @@ from parsley.decorators import parsleyfy
 
 from absence.models import Leave
 
+# Django filter by USER
+class LeaveFilter(django_filters.FilterSet):
 
+    class Meta:
+        model = Leave
+        fields = ['user']
+
+
+
+# new leave requset form
 @parsleyfy
 class LeaveForm(forms.ModelForm):
 

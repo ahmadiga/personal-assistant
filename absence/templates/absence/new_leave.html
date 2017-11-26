@@ -32,12 +32,10 @@
                 return false
             });
                 $('#id_pickFrom').datetimepicker({
-                    format: 'YYYY-M-D',
-                    defaultDate: "{{ today_date|date:"YYYY-M-D" }}"
+                    format: 'YYYY-M-D HH:mm',
                 });
                 $('#id_pickTo').datetimepicker({
-                    format: 'YYYY-M-D',
-                    defaultDate: "{{ today_date|date:"YYYY-M-D" }}"
+                    format: 'YYYY-M-D HH:mm',
                 });
         </script>
 

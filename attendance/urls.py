@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^attendance-details/(\d+)$', views.attendance_details, name='attendance_details'),
     url(r'^checkin/$', views.checkin, name='attendance_checkin'),
     url(r'^checkout/$', views.checkout, name='attendance_checkout'),
+    url(r'^export/xls/$', views.export_attendance_xls, name='export_attendance_xls'),
 ]

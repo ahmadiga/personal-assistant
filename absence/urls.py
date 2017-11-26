@@ -1,6 +1,7 @@
 from django.conf.urls import url
-
+from django_filters.views import FilterView
 from absence import views
+from absence.models import Leave
 
 urlpatterns=[
     url(r'^leave-request/$', views.list_leave, name='leave_req'),

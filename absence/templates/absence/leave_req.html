@@ -1,6 +1,9 @@
 {% extends "absence/layout/layout.html" %}
 {% load i18n %}
+{% load url_add_query %}
 {% block content %}
+
+{#    requsest new leave button#}
     <div class="row">
         <div class="col-md-12">
             <a class='btn btn-info btn-block' data-toggle="modal" data-target="#site-modal"
@@ -8,7 +11,30 @@
             </a>
         </div>
     </div>
-    <hr/>
+
+{#    Excel download button#}
+    </br>
+    {% if user.is_staff %}
+        <div class="row">
+            <div class="col-md-2">
+                <a href="{% url_add_query request.get_full_path excel=True %}" class="btn btn-info">
+                    <i class="glyphicon glyphicon-save"></i> Download As Excel</a>
+            </div>
+
+
+{#   Filter field#}
+            <form class="form-inline">
+                <div class="form-group">
+                    <label>{{ filter.form.as_p }}</label>
+                    <button type="submit" class="btn btn-info">Submit</button>
+                </div>
+            </form>
+        </div>
+
+<br/>
+
+    {% endif %}
+
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
@@ -23,10 +49,10 @@
                     Submitted by
                 </div>
                 {% endif %}
-                <div class="col-md-1">
+                <div class="col-md-2">
                     From date
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                     To date
                 </div>
                 <div class="col-md-1">
@@ -40,6 +66,7 @@
                 </div>
             </div>
         </div>
+
         <div class="panel-body">
          {% for leave in leaves %}
              {% include 'absence/leave_item.html' %}
@@ -47,4 +74,29 @@
         </div>
     </div>
 
+    {#Pagination#}
+    <div class="row" align="center">
+            <div class="col-md-12">
+                {% if leaves.has_other_pages %}
+                    <ul class="pagination">
+                        {% if leaves.has_previous %}
+                            <li><a href="?page={{ leaves.previous_page_number }}">&laquo;</a></li>
+                        {% else %}
+                            <li class="disabled"><span>&laquo;</span></li>
+                        {% endif %}
+                {% for i in leaves.paginator.page_range %}
+                    {% if leaevs.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                    {% if leaves.has_next %}
+                        <li><a href="?page={{ leaves.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                    </ul>
+                {% endif %}
+            </div>
 {% endblock %}

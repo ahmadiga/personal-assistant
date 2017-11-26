@@ -81,7 +81,7 @@
                 </div>
             </div>
 
-        <div class="panel panel-default">
+        <div class="panel panel-info text-center">
                 <div class="panel-heading">
                     <h4>
                         Latest Absence Requests
@@ -146,7 +146,7 @@
                         </tbody>
                     </table>
                     <a href="{% url "new_leave" %}" data-toggle="modal"
-                       data-target="#new_leave" class="btn btn-info "> Add absence request
+                       data-target="#new_leave" class="btn btn-info btn-block"> Add absence request
                     </a>
                 </div>
             </div>
@@ -267,7 +267,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-info text-center">
                 <div class="panel-heading">
                     <h4>
                         Queued Requests
@@ -341,7 +341,7 @@
                         {% endfor %}
                     </table>
                     <a href="{% url "manage_task" username=user.username %}" data-toggle="modal"
-                       data-target="#site-modal" class="btn btn-info">Add request to
+                       data-target="#site-modal" class="btn btn-info btn-block">Add request to
                         queue</a>
                 </div>
             </div>

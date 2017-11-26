@@ -1,3 +1,4 @@
+import django_filters
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django.forms import ModelForm
@@ -6,6 +7,13 @@ from django.utils.translation import ugettext_lazy as _
 from parsley.decorators import parsleyfy
 
 from attendance.models import Attendance
+
+
+class AttendanceFilter(django_filters.FilterSet):
+
+    class Meta:
+        model = Attendance
+        fields = ['user']
 
 
 @parsleyfy

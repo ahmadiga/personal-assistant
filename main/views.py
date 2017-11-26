@@ -126,7 +126,6 @@ def dashboard(request, username=None):
         "week_totals": week_totals,
         "today_date": today_date,
         "leaves": leaves,
-
     })
 
 

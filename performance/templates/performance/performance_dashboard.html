@@ -1,0 +1,276 @@
+{% extends "performance/layout/layout.html" %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+    <meta charset="utf-8">
+    <link href="{% static 'css/nv.d3.css' %}" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" charset="utf-8"></script>
+    <script src="{% static 'js/nv.d3.js' %}"></script>
+
+
+    <style>
+
+    #myBar {
+    width: 10%;
+    height: 30px;
+    background-color: #4CAF50;
+    text-align: center; /* To center it horizontally (if you want) */
+    line-height: 30px; /* To center it vertically */
+    color: white;
+}
+
+
+
+
+        #AnnualPieChart svg{
+            display: block;
+            float: left;
+            height: 350px !important;
+            width: 350px !important;
+        }
+        #AnnualPieChart svg {
+            margin: 0px;
+            padding: 0px;
+            height: 100%;
+            width: 100%;
+        }
+
+        #MonthlyPieChart svg {
+            display: block;
+            float: left;
+            height: 350px !important;
+            width: 100% !important;
+        }
+        #MonthlyPieChart svg {
+            margin: 0px;
+            padding: 0px;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+{#----------------->> end STYLE <<------------------    #}
+
+    <div class="row">
+        <div class="col-md-6">
+            <h1>
+                {{ user.username }}'s Performance
+            </h1>
+        </div>
+    </div>
+
+</br>
+
+{# ---> annual leave PieeChart <---#}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-info text-center">
+                <div class="panel-heading">
+                    <h4>
+                        Annual Leaves
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <div id="AnnualPieChart"></div>
+                </div>
+            </div>
+        </div>
+
+{# ---> monthly leave pieChart <---#}
+    <div class="col-md-3">
+        <div class="panel panel-info text-center">
+            <div class="panel-heading">
+                <h4>
+                    Monthly Hourly Leaves
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div id="MonthlyPieChart"></div>
+            </div>
+        </div>
+    </div>
+
+{# ---> daily hour progress bar <---#}
+     <div class="col-md-6">
+         <div class="panel panel-info text-center">
+             <div class="panel-heading">
+                 <h4>
+                     Today
+                 </h4>
+             </div>
+             <div class="panel-body">
+                 <div class="progress">
+                     <div id="load" class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{ today_performance }}%" aria-valuenow="{{ today_performance }}" aria-valuemin="0" aria-valuemax="100">
+                         {{ today_performance }}%
+                     </div>
+                 </div>
+             </div>
+         </div>
+    </div>
+
+{# ---> monthly hour progress bar <---#}
+    <div class="col-md-6">
+        <div class="panel panel-info text-center">
+            <div class="panel-heading">
+                <h4>
+                    This Month
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ month_performance }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ month_performance }}%">
+                        {{ month_performance }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{# ---> annual hour progress bar <---#}
+    <div class="col-md-6">
+        <div class="panel panel-info text-center">
+            <div class="panel-heading">
+                <h4>
+                    This Year
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div class="progress">
+                    <div class="bg-success progress-bar bg-danger progress-bar-striped active" role="progressbar" aria-valuenow="{{ year_performance }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ year_performance }}%">
+                        {{ year_performance }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{#  TEST progress bar  ///////////////////////////////////////////#}
+
+{#    <div class="col-md-6">#}
+{#        <div class="panel panel-info text-center">#}
+{#            <div class="panel-heading">#}
+{#                <h4>#}
+{#                    TEST PROGRESS#}
+{#                </h4>#}
+{#            </div>#}
+{#            <div class="panel-body">#}
+{#                <div  class="progress">#}
+{#                    <div id="load" class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{ today_performance }}%" aria-valuenow="{{ today_performance }}" aria-valuemin="0" aria-valuemax="100">#}
+{#                        {{ today_performance }}#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+
+
+{#   TEST     ///////////////////////////////////////////#}
+
+    </div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+  var timerId, percent;
+  // reset progress bar
+  percent = 0;
+  $('#load').css('width', '0px');
+  $('#load').addClass('progress-bar-striped active');
+
+  timerId = setInterval(function() {
+    // increment progress bar
+    percent += 1;
+    $('#load').css('width', {{ today_performance }} + '%');
+    $('#load').html( {{ today_performance }} + '%');
+
+    // complete
+    if ({{ today_performance }} == {{ required_hours }} ) {
+      clearInterval(timerId);
+      $('#pay').attr('disabled', false);
+      $('#load').removeClass('progress-bar-striped active');
+      $('#load').html('Daily hour complete');
+
+    }
+
+  }, 200);
+
+
+
+
+{#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX#}
+{#----------> Start PieChart Script<--------#}
+
+
+{% if taken_hourly_leave >= total_hourly_leave %}
+    var hourlyLeaveData = [
+        {key: "Limit Reached!", y: {{total_hourly_leave}}, color: "red" },
+    ];
+    {% else %}
+    var hourlyLeaveData = [
+        {key: "Taken", y: {{taken_hourly_leave}} },
+        {key: "Remaining", y: {{remaining_hourly_leave}} },
+    ];
+{% endif %}
+{#--------> ending if statement of hourly leave <---------#}
+
+{% if taken_annual_leave >= total_annual_leave %}
+    var hourlyLeaveData = [
+        {key: "Limit Reached!", y: {{total_annual_leave}}, color: "red" },
+    ];
+    {% else %}
+    var AnnualLeaveData = [
+        {key: "Leaves", y: {{taken_annual_leave }} },
+        {key: "Remaining leave", y: {{remaining_annual_leave}} },
+    ];
+{% endif %}
+{#--------> ending if statement of annual leave <---------#}
+
+    var height = 350;
+    var width = 350;
+
+    nv.addGraph(function() {
+        var chart = nv.models.pieChart()
+            .x(function(d) { return d.key })
+            .y(function(d) { return d.y })
+            .width(width)
+            .height(height)
+            .showTooltipPercent(true);
+
+{#--> hourly leave Data <--#}
+        d3.select("#MonthlyPieChart").append('svg')
+            .datum(hourlyLeaveData)
+            .transition().duration(1200)
+            .attr('width', width)
+            .attr('height', height)
+            .call(chart);
+
+{#--> annual leave Data <--#}
+        d3.select("#AnnualPieChart").append('svg')
+            .datum(AnnualLeaveData)
+            .transition().duration(1200)
+            .attr('width', width)
+            .attr('height', height)
+            .call(chart);
+
+        return chart;
+    });
+
+    nv.addGraph(function() {
+        var chart = nv.models.pieChart()
+            .x(function(d) { return d.key })
+            .y(function(d) { return d.y })
+            //.labelThreshold(.08)
+            //.showLabels(false)
+            .color(d3.scale.category20().range().slice(8))
+            .growOnHover(false)
+            .labelType('value')
+            .width(width)
+            .height(height);
+
+        return chart;
+    });
+{#----------> End pieChart Script<--------#}
+</script>
+{% endblock %}

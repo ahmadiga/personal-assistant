@@ -39,6 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+# my apps
+INSTALLED_APPS += [
+    'time_tracker',
+    'attendance',
+    "main",
+    "absence",
+    "performance",
+]
+
 # 3rd party
 INSTALLED_APPS += [
     "compressor",
@@ -57,17 +66,12 @@ INSTALLED_APPS += [
     'explorer',
     'report_builder',
     'bootstrap3_datepicker',
+    'xlwt',
+    'django_filters',
+    'django_nvd3',
 ]
 
 # Django debug toolbar settings
-
-# my apps
-INSTALLED_APPS += [
-    'time_tracker',
-    'attendance',
-    "main",
-    "absence",
-]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

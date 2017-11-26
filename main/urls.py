@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^status/(?P<username>[-\w.]+)/$', views.dashboard, name='user_status'),
     url(r'^attendance/', include('attendance.urls')),
     url(r'^absence/', include('absence.urls')),
+    url(r'^performance/', include('performance.urls')),
     url(r'^time-tracker/', include('time_tracker.urls')),
     url(r'^manage-profile$', views.manage_profile, name='manage_profile'),
     url(r'^profile-details/(\d+)$', views.profile_details, name='profile_details'),

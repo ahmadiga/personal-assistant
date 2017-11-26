@@ -1,3 +1,5 @@
+python-nvd3==0.14.2
+xlwt
 django-bootstrap3-datepicker
 amqp==2.1.4
 asgi-ipc==1.2.0
