@@ -58,4 +58,4 @@ websocket-client==0.40.0
 zope.interface==4.3.3
 cleverbot==2.0.0
 django-debug-toolbar
-django_filters
+django-filter
