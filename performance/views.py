@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render
 
 from absence.models import Leave
 from attendance.models import Attendance
+from attendance.views import check_allowed_ips
 from main.models import MyUser
 from time_tracker.models import TimeEntry
 
@@ -14,48 +15,75 @@ from time_tracker.models import TimeEntry
 def performance(request):
     user = request.user
     today = timezone.now()
+    is_checkout = Attendance.objects.filter(check_out=None, user=user)
+    is_allowed = check_allowed_ips(request)
+
 
     # get annual leaves
-    min_date = datetime.datetime.utcnow().date().replace(day=1, month=1).isoformat()
-    max_date = datetime.datetime.utcnow().date().replace(day=30, month=12).isoformat()
-    taken_annual_leave = Leave.objects.filter(type__in=['SL', 'PL'], user=user, pickFrom__gte=min_date, pickFrom__lte=max_date).count()
+    year_min_date = datetime.datetime.utcnow().date().replace(day=1, month=1).isoformat()
+    year_max_date = datetime.datetime.utcnow().date().replace(day=1, month=12).isoformat()
+    taken_annual_leave = Leave.objects.filter(type__in=['SL', 'PL'], user=user,
+                                              pickFrom__gte=year_min_date, pickFrom__lte=year_max_date).count()
     total_annual_leave = 14
     remaining_annual_leave = total_annual_leave - taken_annual_leave
 
     # get monthly hourly leaves
-    min_date = datetime.datetime.utcnow().date().replace(day=1).isoformat()
-    max_date = datetime.datetime.utcnow().date().replace(day=30).isoformat()
-    taken_hourly_leave = Leave.objects.filter(type__in=['TL'], user=user, pickFrom__gte=min_date, pickFrom__lte=max_date).count()
+    month_min_date = datetime.datetime.utcnow().date().replace(day=1).isoformat()
+    month_max_date = datetime.datetime.utcnow().date().replace(day=30).isoformat()
+
+    taken_hourly_leave = Leave.objects.filter(type__in=['TL'], user=user,
+                                              pickFrom__gte=month_min_date, pickFrom__lte=month_max_date).count()
     total_hourly_leave = 12
     remaining_hourly_leave = total_hourly_leave - taken_hourly_leave
 
     # today performance
-    required_hours = 8
-    attendance = Attendance.objects.filter(Q(user=user) & Q(check_in__day=today.day) & Q(check_out=None)).first()
+    day_min_date = datetime.datetime.utcnow().replace(hour=0, minute=0, second=0).isoformat()
+    day_max_date = datetime.datetime.utcnow().replace(hour=23, minute=59, second=59).isoformat()
+    daily_taken_hourly_leave = Leave.objects.filter(type__in=['TL'], user=user,
+                                                    pickFrom__gte=day_min_date, pickFrom__lte=day_max_date).count()
+    required_hours = 8 - (daily_taken_hourly_leave * 3)
+    attendance = Attendance.objects.filter(Q(user=user) & Q(check_in__day=today.day)
+                                           & Q(check_out=None)).first()
     if attendance:
         current_hours = today - attendance.check_in
         current_hours = current_hours.seconds / 60 / 60
         today_performance = int(current_hours / required_hours * 100)
     else:
         current_hours = 0
-        current_hours = 0
         today_performance = 0
 
     # this month performance
-    month_required_hours = 176
-    month_attendance = Attendance.objects.filter(Q(user=user) & Q(check_in__month=today.month)).aggregate(dsum=Sum("duration"))
+    month_min_date = datetime.datetime.utcnow().date().replace(day=1).isoformat()
+    month_max_date = datetime.datetime.utcnow().date().replace(day=30).isoformat()
+    monthly_taken_hourly_leave = Leave.objects.filter(
+        type__in=['TL'],user=user, pickFrom__gte=month_min_date, pickFrom__lte=month_max_date).count()
+    monthly_taken_leave = Leave.objects.filter(
+        type__in=['SL', 'PL'], user=user, pickFrom__gte=month_min_date, pickFrom__lte=month_max_date).count()
+    month_required_hours = 176 - (monthly_taken_hourly_leave * 3) - (monthly_taken_leave * 8)
+    month_attendance = Attendance.objects.filter(
+        Q(user=user) & Q(check_in__month=today.month)).aggregate(dsum=Sum("duration"))
     month_current_hours = month_attendance['dsum'] / 1000 / 60 / 60
     month_performance = int(month_current_hours / month_required_hours * 100)
 
 
     # this year performance
-    year_required_hours = 2112
-    year_attendance = Attendance.objects.filter(Q(user=user) & Q(check_in__year=today.year)).aggregate(dsum=Sum("duration"))
+    year_min_date = datetime.datetime.utcnow().date().replace(day=1, month=1).isoformat()
+    year_max_date = datetime.datetime.utcnow().date().replace(day=1, month=12).isoformat()
+    yearly_taken_hourly_leave = Leave.objects.filter(
+        type__in=['TL'], user=user, pickFrom__gte=year_min_date, pickFrom__lte=year_max_date).count()
+    yearly_taken_leave = Leave.objects.filter(
+        type__in=['SL', 'PL'], user=user, pickFrom__gte=year_min_date, pickFrom__lte=year_max_date).count()
+    year_required_hours = 2112 - (yearly_taken_hourly_leave * 3) - (yearly_taken_leave * 8)
+    year_attendance = Attendance.objects.filter(
+        Q(user=user) & Q(check_in__year=today.year)).aggregate(dsum=Sum("duration"))
     year_current_hours = year_attendance['dsum'] / 1000 / 60 / 60
     year_performance = int(year_current_hours / year_required_hours * 100)
 
     return render(request, 'performance/performance_dashboard.html',
-                  {'taken_annual_leave': taken_annual_leave,
+                  {'is_checkout': is_checkout,
+                   'is_allowed': is_allowed,
+
+                   'taken_annual_leave': taken_annual_leave,
                    'remaining_annual_leave': remaining_annual_leave,
                    'total_annual_leave': total_annual_leave,
 
@@ -66,8 +94,11 @@ def performance(request):
                    'required_hours': required_hours,
                    'current_hours': current_hours,
                    'today_performance': today_performance,
+                   'daily_taken_hourly_leave': daily_taken_hourly_leave,
 
                    'month_performance': month_performance,
+                   'monthly_taken_hourly_leave': monthly_taken_hourly_leave,
 
                    'year_performance': year_performance,
+                   'yearly_taken_hourly_leave': yearly_taken_hourly_leave,
                    })
