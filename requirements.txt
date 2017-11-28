@@ -59,3 +59,4 @@ zope.interface==4.3.3
 cleverbot==2.0.0
 django-debug-toolbar
 django-filter
+django-nvd3
