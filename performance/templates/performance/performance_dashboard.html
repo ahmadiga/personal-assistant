@@ -9,19 +9,6 @@
 
 
     <style>
-
-    #myBar {
-    width: 10%;
-    height: 30px;
-    background-color: #4CAF50;
-    text-align: center; /* To center it horizontally (if you want) */
-    line-height: 30px; /* To center it vertically */
-    color: white;
-}
-
-
-
-
         #AnnualPieChart svg{
             display: block;
             float: left;
@@ -49,7 +36,6 @@
         }
     </style>
 {#----------------->> end STYLE <<------------------    #}
-
     <div class="row">
         <div class="col-md-6">
             <h1>
@@ -159,8 +145,6 @@
   percent = 0;
       $('#load').css('width', '0px');
       $('#load').addClass('progress-bar-striped active');
-
-  timerId = setInterval(function() {
       // increment progress bar
    percent += 1;
        $('#load').css('width', {{ today_performance }} + '%');
@@ -172,13 +156,8 @@
       $('#load').removeClass('progress-bar-striped active');
       $('#load').html('Daily hour complete');
     }
-  }, 300);
 
-
-{#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX#}
 {#----------> Start PieChart Script<--------#}
-
-
 {% if taken_hourly_leave >= total_hourly_leave %}
     var hourlyLeaveData = [
         {key: "Limit Reached!", y: {{total_hourly_leave}}, color: "red" },
