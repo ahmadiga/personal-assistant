@@ -31,11 +31,11 @@ def check_allowed_ips(request):
     # return client_ip in COMPANY_IDS
     return True
 
-
 @login_required
 def list_attendance(request, id=None):
     is_allowed = check_allowed_ips(request)
-    attendances = Attendance.objects.all().order_by('-check_in')
+
+    attendances = Attendance.objects.filter(user=request.user).order_by('-check_in')
     is_checkout = Attendance.objects.filter(check_out=None, user=request.user)
 
     f = AttendanceFilter(request.GET, queryset=attendances)
@@ -50,8 +50,7 @@ def list_attendance(request, id=None):
         except PageNotAnInteger:
             attendances = paginator.page(1)
         return render(request, 'attendance/attendance/list_attendance.html',
-                      {'attendances': attendances, "is_checkout": is_checkout, "is_allowed": is_allowed,'filter': f})
-
+                      {'attendances': attendances, "is_checkout": is_checkout, "is_allowed": is_allowed, 'filter': f})
 
 @login_required
 def checkin(request):

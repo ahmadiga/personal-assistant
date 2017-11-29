@@ -62,6 +62,7 @@
             </div>
         </div>
         <div class="panel-body">
+        {{ attendances.qs }}
             {% for item in attendances %}
                 {% include 'attendance/attendance/attendance_item.html' %}
             {% endfor %}
