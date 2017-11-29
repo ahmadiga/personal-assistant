@@ -52,7 +52,6 @@ def list_attendance(request, id=None):
         return render(request, 'attendance/attendance/list_attendance.html',
                       {'attendances': attendances, "is_checkout": is_checkout, "is_allowed": is_allowed, 'filter': f})
 
-
 @login_required
 def checkin(request):
     if check_allowed_ips(request):
