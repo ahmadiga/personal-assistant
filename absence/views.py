@@ -46,7 +46,7 @@ def new_leave(request):
     if form.is_valid():
         form.save()
         post_message_on_channel("#absence",
-                           get_slack_user(request.user) + "requested for a leave" + str(
+                           get_slack_user(request.user) + " requested for a leave " + str(
                                timezone.localtime(timezone.now()).strftime(
                                    "%Y-%m-%d %H:%M")) + "\n for more info please visit" + settings.SITE_URL + str(
                                reverse("user_status", kwargs={"username": request.user.username})))
