@@ -1,5 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from performance.models import Performance, Team
 
-# admin.site.register(Profile)
+admin.site.register(Performance)
+admin.site.register(Team)

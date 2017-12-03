@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load calculate_hours %}
+
+
+<div class="row">
+    <div class="col-md-3">
+        {{ team.name }}
+    </div>
+    <div class="col-md-1">
+        <a href="{% url "team_performance_dashboard" team.id %}" class="btn btn-sm btn-info" title="More Info"><i class="fa fa-external-link"></i></a>
+        </div>
+</div>

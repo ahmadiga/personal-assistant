@@ -13,6 +13,7 @@ from django.db.models import Q
 class Profile(models.Model):
     slack_username = models.CharField(max_length=255)
     user = models.OneToOneField(User)
+    avatar = models.ImageField()
 
 
 class MyUser(User):
