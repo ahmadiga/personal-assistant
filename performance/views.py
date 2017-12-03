@@ -8,6 +8,7 @@ from absence.models import Leave
 from attendance.models import Attendance
 from attendance.views import check_allowed_ips
 from main.models import MyUser
+from performance.models import Team
 from time_tracker.models import TimeEntry
 
 
@@ -16,7 +17,6 @@ def performance(request):
     user = request.user
     today = timezone.now()
     is_checkout = Attendance.objects.filter(check_out=None, user=user)
-    is_allowed = check_allowed_ips(request)
 
 
     # get annual leaves
@@ -56,14 +56,18 @@ def performance(request):
     month_min_date = datetime.datetime.utcnow().date().replace(day=1).isoformat()
     month_max_date = datetime.datetime.utcnow().date().replace(day=30).isoformat()
     monthly_taken_hourly_leave = Leave.objects.filter(
-        type__in=['TL'],user=user, pickFrom__gte=month_min_date, pickFrom__lte=month_max_date).count()
+        type__in=['TL'], user=user, pickFrom__gte=month_min_date, pickFrom__lte=month_max_date).count()
     monthly_taken_leave = Leave.objects.filter(
         type__in=['SL', 'PL'], user=user, pickFrom__gte=month_min_date, pickFrom__lte=month_max_date).count()
     month_required_hours = 176 - (monthly_taken_hourly_leave * 3) - (monthly_taken_leave * 8)
     month_attendance = Attendance.objects.filter(
         Q(user=user) & Q(check_in__month=today.month)).aggregate(dsum=Sum("duration"))
-    month_current_hours = month_attendance['dsum'] / 1000 / 60 / 60
-    month_performance = int(month_current_hours / month_required_hours * 100)
+    if attendance:
+        month_current_hours = month_attendance['dsum'] / 1000 / 60 / 60
+        month_performance = int(month_current_hours / month_required_hours * 100)
+    else:
+        month_current_hours = 0
+        month_performance = 0
 
 
     # this year performance
@@ -81,7 +85,6 @@ def performance(request):
 
     return render(request, 'performance/performance_dashboard.html',
                   {'is_checkout': is_checkout,
-                   'is_allowed': is_allowed,
 
                    'taken_annual_leave': taken_annual_leave,
                    'remaining_annual_leave': remaining_annual_leave,
@@ -102,3 +105,12 @@ def performance(request):
                    'year_performance': year_performance,
                    'yearly_taken_hourly_leave': yearly_taken_hourly_leave,
                    })
+@login_required
+def team_performance(request):
+    teams = Team.objects.filter(users=request.user)
+
+    return render(request, 'performance/list_team.html', {'teams': teams})
+
+def team_performance_dashboard(request, id=None):
+    team = get_object_or_404(Team, pk=id)
+    return render(request, 'performance/team_performance_dashboard.html', {'team': team})

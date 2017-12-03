@@ -1,0 +1,39 @@
+{% extends "performance/layout/layout.html" %}
+{% load i18n %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <h1>
+                List Teams
+            </h1>
+        </div>
+    </div>
+
+</br>
+
+{% if teams.exists %}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-3">
+                    Team name
+                </div>
+                <div class="col-md-3">
+                    Team's Dashboard
+                </div>
+            </div>
+    </div>
+    <div class="panel-body">
+        {% for team in teams %}
+            {% include 'performance/team_item.html' %}
+        {% endfor %}
+    </div>
+    </div>
+{% else %}
+    <div class="alert alert-danger text-center">
+        You are not a team member!
+    </div>
+{% endif %}
+
+{% endblock %}

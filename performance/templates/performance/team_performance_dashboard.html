@@ -1,0 +1,104 @@
+{% extends "performance/layout/layout.html" %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <h1>
+                {{ team.name }}'s Performance
+            </h1>
+        </div>
+    </div>
+
+</br>
+
+{# ---> annual leave PieeChart <---#}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-info text-center">
+                <div class="panel-heading">
+                    <h4>
+                        Annual Leaves
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <div id="AnnualPieChart"></div>
+                </div>
+            </div>
+        </div>
+
+{# ---> monthly leave pieChart <---#}
+    <div class="col-md-3">
+        <div class="panel panel-info text-center">
+            <div class="panel-heading">
+                <h4>
+                    Monthly Hourly Leaves
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div id="MonthlyPieChart"></div>
+            </div>
+        </div>
+    </div>
+
+{# ---> daily hour progress bar <---#}
+     <div class="col-md-6">
+         <div class="panel panel-info text-center">
+             <div class="panel-heading">
+                 <h4>
+                     Today
+                 </h4>
+             </div>
+             <div class="panel-body">
+                 {% if is_checkout %}
+                 <div class="progress">
+                     <div id="load" class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width:{{ today_performance }}%" aria-valuenow="{{ today_performance }}" aria-valuemin="0" aria-valuemax="100">
+                         {{ today_performance }}%
+                     </div>
+                 </div>
+                     {% else %}
+                <div class="alert alert-danger text-center">
+                    You need to be checked in @ the company!
+                </div>
+                     {% endif %}
+             </div>
+         </div>
+    </div>
+
+{# ---> monthly hour progress bar <---#}
+    <div class="col-md-6">
+        <div class="panel panel-info text-center">
+            <div class="panel-heading">
+                <h4>
+                    This Month
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ month_performance }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ month_performance }}%">
+                        {{ month_performance }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{# ---> annual hour progress bar <---#}
+    <div class="col-md-6">
+        <div class="panel panel-info text-center">
+            <div class="panel-heading">
+                <h4>
+                    This Year
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div class="progress">
+                    <div class="bg-success progress-bar bg-danger progress-bar-striped active" role="progressbar" aria-valuenow="{{ year_performance }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ year_performance }}%">
+                        {{ year_performance }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
