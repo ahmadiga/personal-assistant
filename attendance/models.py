@@ -10,7 +10,7 @@ class Attendance(models.Model):
     user = models.ForeignKey(User)
     check_in = models.DateTimeField(null=True, blank=True, editable=True)
     check_out = models.DateTimeField(null=True, blank=True)
-    duration = models.BigIntegerField(null=True, blank=True)
+    duration = models.BigIntegerField(default=0, null=True, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

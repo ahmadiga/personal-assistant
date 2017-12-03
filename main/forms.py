@@ -31,7 +31,7 @@ class CustomLogin(AuthenticationForm):
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        exclude = ["user"]
+        exclude = ["user", "avatar"]
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
@@ -40,6 +40,9 @@ class ProfileForm(ModelForm):
         self.helper.layout = Layout(
             Div(
                 Div('slack_username', css_class="col-md-12"),
+                css_class="row"),
+            Div(
+                Div('avatar', css_class="col-md-12"),
                 css_class="row"),
             Div(
                 Div(Div(Submit('save', _('Save Changes'), css_class='btn btn-success btn-block'),

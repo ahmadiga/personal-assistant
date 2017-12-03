@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.decorators import login_required
 import datetime
 from django.utils import timezone
@@ -11,13 +13,14 @@ from main.models import MyUser
 from performance.models import Team
 from time_tracker.models import TimeEntry
 
+logger = logging.getLogger('django.channels')
+
 
 @login_required
 def performance(request):
     user = request.user
     today = timezone.now()
     is_checkout = Attendance.objects.filter(check_out=None, user=user)
-
 
     # get annual leaves
     year_min_date = datetime.datetime.utcnow().date().replace(day=1, month=1).isoformat()
@@ -62,13 +65,12 @@ def performance(request):
     month_required_hours = 176 - (monthly_taken_hourly_leave * 3) - (monthly_taken_leave * 8)
     month_attendance = Attendance.objects.filter(
         Q(user=user) & Q(check_in__month=today.month)).aggregate(dsum=Sum("duration"))
-    if attendance:
+
+    if month_attendance and month_attendance['dsum']:
         month_current_hours = month_attendance['dsum'] / 1000 / 60 / 60
         month_performance = int(month_current_hours / month_required_hours * 100)
     else:
-        month_current_hours = 0
         month_performance = 0
-
 
     # this year performance
     year_min_date = datetime.datetime.utcnow().date().replace(day=1, month=1).isoformat()
@@ -80,8 +82,12 @@ def performance(request):
     year_required_hours = 2112 - (yearly_taken_hourly_leave * 3) - (yearly_taken_leave * 8)
     year_attendance = Attendance.objects.filter(
         Q(user=user) & Q(check_in__year=today.year)).aggregate(dsum=Sum("duration"))
-    year_current_hours = year_attendance['dsum'] / 1000 / 60 / 60
-    year_performance = int(year_current_hours / year_required_hours * 100)
+
+    if year_attendance and year_attendance['dsum']:
+        year_current_hours = year_attendance['dsum'] / 1000 / 60 / 60
+        year_performance = int(year_current_hours / year_required_hours * 100)
+    else:
+        year_performance = 0
 
     return render(request, 'performance/performance_dashboard.html',
                   {'is_checkout': is_checkout,
@@ -105,11 +111,14 @@ def performance(request):
                    'year_performance': year_performance,
                    'yearly_taken_hourly_leave': yearly_taken_hourly_leave,
                    })
+
+
 @login_required
 def team_performance(request):
     teams = Team.objects.filter(users=request.user)
 
     return render(request, 'performance/list_team.html', {'teams': teams})
+
 
 def team_performance_dashboard(request, id=None):
     team = get_object_or_404(Team, pk=id)
