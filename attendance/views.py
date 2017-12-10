@@ -22,14 +22,14 @@ logger = logging.getLogger('django.channels')
 COMPANY_IDS = [
     "185.51.213.81",
     "192.168.99.1",
+    "172.18.0.1",  # local dev machine
 ]
 
 
 def check_allowed_ips(request):
     client_ip = get_client_ip(request)
-    logger.info(client_ip)
-    # return client_ip in COMPANY_IDS
-    return True
+    return client_ip in COMPANY_IDS
+
 
 @login_required
 def list_attendance(request, id=None):
@@ -51,6 +51,7 @@ def list_attendance(request, id=None):
             attendances = paginator.page(1)
         return render(request, 'attendance/attendance/list_attendance.html',
                       {'attendances': attendances, "is_checkout": is_checkout, "is_allowed": is_allowed, 'filter': f})
+
 
 @login_required
 def checkin(request):
@@ -106,7 +107,7 @@ def export_attendance_xls(attendances):
 
     row_num = 0
 
-    columns = ['Username', 'Check in','Check out','Duration']
+    columns = ['Username', 'Check in', 'Check out', 'Duration']
 
     font_style = xlwt.XFStyle()
     font_style.font.bold = True

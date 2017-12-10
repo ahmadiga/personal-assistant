@@ -158,12 +158,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-2 col-md-offset-5"><h4 class="alert alert-success"><i class="fa fa-trophy"></i> Eligible Bonus: <b>{{ bonus_value }}%</b></h4></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     {# ---> sprint progress bar <---#}
+
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-info text-center">
@@ -173,6 +177,7 @@
                     </h4>
                 </div>
                 <div class="panel-body">
+                    {% if sprint %}
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped active" role="progressbar"
                              aria-valuenow="{{ sprint_performance }}" aria-valuemin="0" aria-valuemax="100"
@@ -180,6 +185,11 @@
                             {{ sprint_performance }}%
                         </div>
                     </div>
+                    {% else %}
+                        <div class="alert alert-danger text-center">
+                            No Sprint Available
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -226,7 +236,7 @@
                 <div class="panel panel-info text-center">
                     <div class="panel-heading">
                         <h4>
-                            Latest Team Attendance
+                            Average Team Attendance
                         </h4>
                     </div>
                     <div class="panel-body">

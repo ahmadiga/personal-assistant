@@ -10,6 +10,7 @@ from absence.models import Leave
 from attendance.models import Attendance
 from attendance.views import check_allowed_ips
 from main.models import MyUser
+from performance.helpers import convert_date_to_float
 from performance.models import Team, Sprint
 from time_tracker.models import TimeEntry
 
@@ -139,22 +140,29 @@ def team_performance(request):
 
 def team_performance_dashboard(request, id=None):
     team = get_object_or_404(Team, pk=id)
-    sprint = Sprint.objects.get(~Q(status='PE') & Q(team=team))
+    try:
+        sprint = Sprint.objects.get(~Q(status='PE') & Q(team=team))
+    except:
+        sprint = False
+
     all_sprints = team.sprint_set.all()
     members = team.users.all()
 
     # sprint performance ------------start-----------
-    sprint_required_hours = sprint.sprint_length * 5 * 8 * members.count()
-    team_actual_hours = 0
+    if sprint:
+        sprint_required_hours = sprint.sprint_length * 5 * 8 * members.count()
+        team_actual_hours = 0
 
-    for member in members:
-        mil_seconds = Attendance.objects.filter(
-            Q(user=member) & Q(check_in__gte=sprint.start_sprint) & Q(check_in__lte=sprint.end_sprint)).aggregate(
-            dsum=Sum("duration"))['dsum']
-        if mil_seconds:
-            team_actual_hours += (mil_seconds / 1000 / 60 / 60)
+        for member in members:
+            mil_seconds = Attendance.objects.filter(
+                Q(user=member) & Q(check_in__gte=sprint.start_sprint) & Q(check_in__lte=sprint.end_sprint)).aggregate(
+                dsum=Sum("duration"))['dsum']
+            if mil_seconds:
+                team_actual_hours += (mil_seconds / 1000 / 60 / 60)
 
-    sprint_performance = int((team_actual_hours / sprint_required_hours) * 100)
+        sprint_performance = int((team_actual_hours / sprint_required_hours) * 100)
+    else:
+        sprint_performance = 0
     # sprint performance ------------end-----------
 
     # project performance ------------start-----------
@@ -175,7 +183,9 @@ def team_performance_dashboard(request, id=None):
     team_cost = team.team_cost_per_hour * team.project_length * 5 * 8
     project_budget = team.project_budget
 
+
     budget_performance = team_cost / project_budget
+    bonus_value = 100 - budget_performance
     # project budget -------------end----------
 
     # team member performance ----------start----------
@@ -192,25 +202,32 @@ def team_performance_dashboard(request, id=None):
         temp['profile'] = member
         temp['result'] = int(duration_sum)
 
-
-
         average_check_in = Attendance.objects.filter(
-            Q(user=member) & Q(check_in__gte=team.start_project) & Q(check_in__lte=team.end_project)& ~Q(check_out=None)).order_by('-id')
+            Q(user=member) & Q(check_in__gte=team.start_project) & Q(check_in__lte=team.end_project) & ~Q(
+                check_out=None)).values_list('check_in', flat=True)
+
         average_check_out = Attendance.objects.filter(
-            Q(user=member) & Q(check_in__gte=team.start_project) & Q(check_in__lte=team.end_project) & ~Q(check_out=None)).order_by('-id')
+            Q(user=member) & Q(check_in__gte=team.start_project) & Q(check_in__lte=team.end_project) & ~Q(
+                check_out=None)).values_list('check_out', flat=True)
 
         if average_check_in.exists() and average_check_out.exists():
-            temp['check_in'] = float(average_check_in[0].check_in.strftime('%H.%M'))
-            temp['check_out'] = float(average_check_out[0].check_out.strftime('%H.%M')) - temp['check_in']
+            average_check_in = list(map(convert_date_to_float, average_check_in))
+            average_check_in = sum(average_check_in) / len(average_check_in)
+            temp['check_in'] = average_check_in
+
+            average_check_out = list(map(convert_date_to_float, average_check_out))
+            average_check_out = sum(average_check_out) / len(average_check_out)
+            temp['check_out'] = average_check_out - average_check_in
+
             temp['check_final'] = 16 - temp['check_out']
+
         else:
             temp['check_in'] = 0
             temp['check_out'] = 0
             temp['check_final'] = 24
 
         members_performance.append(temp)
-    #  team member performance ----------end-------
-
+    # team member performance ----------end-------
 
     return render(request, 'performance/team_performance_dashboard.html',
                   {
@@ -222,6 +239,7 @@ def team_performance_dashboard(request, id=None):
                       'sprint_performance': sprint_performance,
                       'project_performance': project_performance,
                       'budget_performance': budget_performance,
+                      'bonus_value': bonus_value,
 
                       'members_performance': members_performance,
 
