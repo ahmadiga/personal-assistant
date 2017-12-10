@@ -2,28 +2,17 @@
 {% load i18n %}
 {% load static %}
 {% block content %}
-    <meta charset="utf-8">
-    <link href="{% static 'css/nv.d3.css' %}" rel="stylesheet" type="text/css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" charset="utf-8"></script>
-    <script src="{% static 'js/nv.d3.js' %}"></script>
 
-<style>
+    <style>
 
-{#------------>>milestone <<---------#}
-        #chart2 text {
-            font: 12px sans-serif;
-        }
-        #chart2 svg {
+        #averagechart svg {
             display: block;
-            height: 100%;
-            width: 100%;
+            float: left;
+            height: 350px !important;
+            width: 100% !important;
         }
-        #chart2 svg {
-            margin: 0px;
-            padding: 0px;
-            height: 100%;
-            width: 100%;
-        }
+
+
     </style>
 
     <div class="row">
@@ -34,184 +23,292 @@
         </div>
     </div>
 
-</br>
-<div class="row">
-{# ---> daily team hour progress bar <---#}
-     <div class="col-md-12">
-         <div class="panel panel-info text-center">
-             <div class="panel-heading">
-                 <h4>
-                     Today
-                 </h4>
-             </div>
-             <div class="panel-body">
-                 {% if is_checkout %}
-                 <div class="progress">
-                     <div id="load" class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width:{{ today_performance }}%" aria-valuenow="{{ today_performance }}" aria-valuemin="0" aria-valuemax="100">
-                         {{ today_performance }}%
-                     </div>
-                 </div>
-                     {% else %}
-                <div class="alert alert-danger text-center">
-                    You need to be checked in @ the company!
+    </br>
+
+    {# ---> Timeline bar <---#}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-info text-center">
+                <div class="panel-heading">
+                    <h4>
+                        Timeline
+                    </h4>
                 </div>
-                     {% endif %}
-             </div>
-         </div>
-    </div>
-  </div>
+                <div class="panel-body">
+                    <label>{{ team.project_name }}</label>
+                    <table class="table table-responsive">
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar {% if team.status == 'PL' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                         role="progressbar" style="width:100%">
+                                        Planning
+                                    </div>
+                                </div>
+                            </td>
+                            {% for sprint in all_sprints %}
+                                <td>
+                                    <div class="progress">
 
+                                        <div class="progress-bar {% if team.status == 'SP' and sprint.status != 'PE' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                             role="progressbar" style="width:100%">
+                                            Sprint #{{ forloop.counter }}
+                                        </div>
+                                    </div>
+                                </td>
+                            {% endfor %}
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar {% if team.status == 'UA' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                         role="progressbar" style="width:100%">
+                                        UAT
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar {% if team.status == 'RE' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                         role="progressbar" style="width:100%">
+                                        Release
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar {% if team.status == 'HO' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                         role="progressbar" style="width:100%">
+                                        Handover
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar {% if team.status == 'CL' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                         role="progressbar" style="width:100%">
+                                        Closed
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <hr/>
+                    {% for sprint in all_sprints %}
+                        {% if sprint.status != 'PE' %}
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3">
+                                    <label>Sprint #{{ forloop.counter }}</label>
+                                    <div class="progress">
 
-{# ---> sprint progress bar <---#}
-    <div class="col-md-6">
-        <div class="panel panel-info text-center">
-            <div class="panel-heading">
-                <h4>
-                    Sprint #1
-                </h4>
+                                        <div class="progress-bar {% if sprint.status == 'PL' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                             role="progressbar" style="width:10%">
+                                            Planing
+                                        </div>
+                                        <div class="progress-bar {% if sprint.status == 'WO' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                             role="progressbar" style="width:40%">
+                                            working
+                                        </div>
+                                        <div class="progress-bar {% if sprint.status == 'QA' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                             role="progressbar" style="width:10%">
+                                            QA
+                                        </div>
+                                        <div class="progress-bar {% if sprint.status == 'DE' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                             role="progressbar" style="width:10%">
+                                            Deploy
+                                        </div>
+                                        <div class="progress-bar {% if sprint.status == 'RV' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                             role="progressbar" style="width:10%">
+                                            Demo
+                                        </div>
+                                        <div class="progress-bar {% if sprint.status == 'RE' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                             role="progressbar" style="width:10%">
+                                            Retro
+                                        </div>
+                                        <div class="progress-bar {% if sprint.status == 'CL' %}progress-bar-success progress-bar-striped active{% endif %}"
+                                             role="progressbar" style="width:10%">
+                                            Closed
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
-            <div class="panel-body">
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{ month_performance }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ month_performance }}%">
-                        {{ month_performance }}%
+        </div>
+    </div>
+
+    {# ---> Budget bar <---#}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-info text-center">
+                <div class="panel-heading">
+                    <h4>
+                        Project Budget
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <div class="progress">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                 style="width:{{ budget_performance }}%" aria-valuenow="{{ budget_performance }}%"
+                                 aria-valuemin="0" aria-valuemax="100">
+                                {{ budget_performance }}%
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-{# ---> project progress bar <---#}
-    <div class="col-md-6">
-        <div class="panel panel-info text-center">
-            <div class="panel-heading">
-                <h4>
-                    Project
-                </h4>
+    {# ---> sprint progress bar <---#}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-info text-center">
+                <div class="panel-heading">
+                    <h4>
+                        This Sprint Team Performance
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar"
+                             aria-valuenow="{{ sprint_performance }}" aria-valuemin="0" aria-valuemax="100"
+                             style="width:{{ sprint_performance }}%">
+                            {{ sprint_performance }}%
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body">
-                <div class="progress">
-                    <div class="bg-success progress-bar bg-danger progress-bar-striped active" role="progressbar" aria-valuenow="{{ year_performance }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ year_performance }}%">
-                        {{ year_performance }}%
+        </div>
+
+        {# ---> project progress bar <---#}
+        <div class="col-md-6">
+            <div class="panel panel-info text-center">
+                <div class="panel-heading">
+                    <h4>
+                        Project Team Performance
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <div class="progress">
+                        <div class="bg-success progress-bar bg-danger progress-bar-striped active" role="progressbar"
+                             aria-valuenow="{{ project_performance }}" aria-valuemin="0" aria-valuemax="100"
+                             style="width:{{ project_performance }}%">
+                            {{ project_performance }}%
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-    {# ---> milestone bar <---#}
-    <div class="col-md-12">
-        <div class="panel panel-info text-center">
-            <div class="panel-heading">
-                <h4>
-                   >>>>>>>>>>>>> Milestone <<<<<<<
-                </h4>
-            </div>
-            <div class="panel-body">
-                <div class='gallery with-transitions' id='chart2'></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <div class="row">
     {# ---> user/prifle progress bar <---#}
-    <div class="col-md-6">
-        <div class="panel panel-info text-center">
-            <div class="panel-heading">
-                <h4>
-                   Team Members
-                </h4>
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-info text-center">
+                    <div class="panel-heading">
+                        <h4>
+                            Team Members Performance
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        {% include 'performance/profile_item.html' %}
+                    </div>
+                </div>
             </div>
-            <div class="panel-body">
-            {% include 'performance/profile_item.html' %}
+
+            {# ---> Avarage team attendance Chart <---#}
+            <div class="col-md-9">
+                <div class="panel panel-info text-center">
+                    <div class="panel-heading">
+                        <h4>
+                            Latest Team Attendance
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        <div id="averagechart"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
 {% endblock %}
 
 {% block js %}
+
     <script>
 
-    nv.addGraph(function() {
-        var chart = nv.models.pieChart()
-            .x(function(d) { return d.key })
-            .y(function(d) { return d.y })
-            .width(width)
-            .height(height)
-            .showTooltipPercent(true);
 
-{#--> hourly leave Data <--#}
-        d3.select("#MonthlyPieChart").append('svg')
-            .datum(hourlyLeaveData)
-            .transition().duration(1200)
-            .attr('width', width)
-            .attr('height', height)
-            .call(chart);
+        var data = [
+            {
+                "key": "Check In",
+                "color": "#fff",
+                "values": [
+                    {% for member in members_performance %}
+                        {
+                            "label": "{{ member.profile.username }}",
+                            "value": parseFloat({{ member.check_in }})
+                        },
+                    {% endfor %}
+                ]
+            },
 
-        return chart;
-    });
-{#    ------->milestone<-----------#}
-    var width = 960,
-        height = 80,
-        margin = {top: 5, right: 40, bottom: 20, left: 120};
+            {
+                "key": "Attendance",
+                "color": "#337ab7",
+                "values": [
+                    {% for member in members_performance %}
+                        {
+                            "label": "{{ member.profile.username }}",
+                            "value": parseFloat({{ member.check_out }})
+                        },
+                    {% endfor %}
+                ]
+            },
+            {
+                "key": "Check Out",
+                "color": "#fff",
+                "values": [
+                    {% for member in members_performance %}
+                        {
+                            "label": "{{ member.profile.username }}",
+                            "value": parseFloat({{ member.check_final }})
+                        },
+                    {% endfor %}
+                ]
+            }
 
-    var chart2 = nv.models.bulletChart()
-            .width(width - margin.right - margin.left)
-            .height(height - margin.top - margin.bottom);
+        ];
 
-    data = [
-        {"title":"Revenue","subtitle":"US$, in thousands","ranges":[150,225,300],"measures":[220],"markers":[250],"markerLines":[270]},
-        {"title":"Order Size","subtitle":"US$, average","ranges":[350,500,600],"measures":[100],"markers":[550], "markerLines":[530]},
-        {"title":"Satisfaction","subtitle":"out of 5","ranges":[3.5,4.25,5],"measures":[3.2,4.7],"markers":[4.4], "markerLines":[3.8]}
-    ];
+        nv.addGraph(function () {
+            var chartx = nv.models.multiBarHorizontalChart()
+                .x(function (d) {
+                    return d.label
+                })
+                .y(function (d) {
+                    return d.value
+                })
+                .margin({top: 30, right: 20, bottom: 50, left: 70})
+                .showValues(true)
+                .stacked(true)
+                .yDomain([8,24])
+                .showLegend(false)
+                .showControls(false);
 
-    dataWithLabels = [{
-        "title":"Revenue",
-        "subtitle":"US$, in thousands",
-        "ranges":[150,225,300],
-        "measures":[220],
-        "markers":[250, 100],
-        "markerLines":[240, 120],
-        "markerLabels":['Target Inventory', 'Low Inventory'],
-        "markerLineLabels":['Break even Inventory', 'Threshold Inventory'],
-        "rangeLabels":['Maximum Inventory','Average Inventory','Minimum Inventory'],
-        "measureLabels":['Current Inventory']
-    }];
+            chartx.yAxis
+                .tickFormat(d3.format(',.2f'));
 
-    //TODO: to be consistent with other models, should be appending a g to an already made svg, not creating the svg element
-    var vis2 = d3.select("#chart2").selectAll("svg")
-        .data(dataWithLabels)
-        .enter().append('svg')
-        .attr('class',"bullet nvd3")
-        .attr("width",width)
-        .attr("height",height);
+            d3.select('#averagechart').append('svg')
+                .datum(data)
+                .call(chartx);
 
-    vis2.call(chart2);
+            nv.utils.windowResize(chartx.update);
 
-    window.transition = function() {
-        vis2.datum(randomize).call(chart2);
-    };
-
-    function randomize(d) {
-        if (!d.randomizer) d.randomizer = randomizer(d);
-        d.ranges = d.ranges.map(d.randomizer);
-        d.markers = d.markers.map(d.randomizer);
-        d.markerLines = d.markerLines.map(d.randomizer);
-        d.measures = d.measures.map(d.randomizer);
-        return d;
-    }
-
-    function randomizer(d) {
-        var k = d3.max(d.ranges) * .2;
-        return function(d) {
-            return Math.max(0, d + k * (Math.random() - .5));
-        };
-    }
-
-    d3.select('body').on('click', window.transition);
-
-</script>
+            return chartx;
+        });
+    </script>
 {% endblock %}

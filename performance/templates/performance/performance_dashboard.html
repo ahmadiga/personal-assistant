@@ -2,10 +2,8 @@
 {% load i18n %}
 {% load static %}
 {% block content %}
-    <meta charset="utf-8">
-    <link href="{% static 'css/nv.d3.css' %}" rel="stylesheet" type="text/css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" charset="utf-8"></script>
-    <script src="{% static 'js/nv.d3.js' %}"></script>
+
+
 
 
     <style>
@@ -46,37 +44,10 @@
 
 </br>
 
-{# ---> annual leave PieeChart <---#}
+
     <div class="row">
-        <div class="col-md-3">
-            <div class="panel panel-info text-center">
-                <div class="panel-heading">
-                    <h4>
-                        Annual Leaves
-                    </h4>
-                </div>
-                <div class="panel-body">
-                    <div id="AnnualPieChart"></div>
-                </div>
-            </div>
-        </div>
-
-{# ---> monthly leave pieChart <---#}
-    <div class="col-md-3">
-        <div class="panel panel-info text-center">
-            <div class="panel-heading">
-                <h4>
-                    Monthly Hourly Leaves
-                </h4>
-            </div>
-            <div class="panel-body">
-                <div id="MonthlyPieChart"></div>
-            </div>
-        </div>
-    </div>
-
 {# ---> daily hour progress bar <---#}
-     <div class="col-md-6">
+     <div class="col-md-10">
          <div class="panel panel-info text-center">
              <div class="panel-heading">
                  <h4>
@@ -100,7 +71,7 @@
     </div>
 
 {# ---> monthly hour progress bar <---#}
-    <div class="col-md-6">
+    <div class="col-md-10">
         <div class="panel panel-info text-center">
             <div class="panel-heading">
                 <h4>
@@ -118,7 +89,7 @@
     </div>
 
 {# ---> annual hour progress bar <---#}
-    <div class="col-md-6">
+    <div class="col-md-10">
         <div class="panel panel-info text-center">
             <div class="panel-heading">
                 <h4>
@@ -135,6 +106,38 @@
         </div>
     </div>
     </div>
+
+    <div class="row">
+    {# ---> annual leave PieChart <---#}
+        <div class="col-md-5">
+            <div class="panel panel-info text-center">
+                <div class="panel-heading">
+                    <h4>
+                        Annual Leaves
+                    </h4>
+                </div>
+                <div class="panel-body ">
+                    <div id="AnnualPieChart"></div>
+                </div>
+            </div>
+        </div>
+
+{# ---> monthly leave pieChart <---#}
+    <div class="col-md-5">
+        <div class="panel panel-info text-center">
+            <div class="panel-heading">
+                <h4>
+                    Monthly Hourly Leaves
+                </h4>
+            </div>
+            <div class="panel-body text-center">
+                <div id="MonthlyPieChart"></div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
 {% endblock %}
 
 {% block js %}
@@ -171,7 +174,7 @@
 {#--------> ending if statement of hourly leave <---------#}
 
 {% if taken_annual_leave >= total_annual_leave %}
-    var hourlyLeaveData = [
+    var AnnualLeaveData  = [
         {key: "Limit Reached!", y: {{total_annual_leave}}, color: "red" },
     ];
     {% else %}
@@ -227,5 +230,7 @@
         return chart;
     });
 {#----------> End pieChart Script<--------#}
+
+
 </script>
 {% endblock %}

@@ -10345,7 +10345,7 @@ nv.models.multiBarHorizontal = function() {
                         if (yerr === undefined)
                             return t;
                         if (!yerr.length)
-                            return t + '±' + valueFormat(Math.abs(yerr));
+                            return t + 'Â±' + valueFormat(Math.abs(yerr));
                         return t + '+' + valueFormat(Math.abs(yerr[1])) + '-' + valueFormat(Math.abs(yerr[0]));
                     });
                 bars.watchTransition(renderWatch, 'multibarhorizontal: bars')
@@ -10496,7 +10496,7 @@ nv.models.multiBarHorizontalChart = function() {
         , height = null
         , color = nv.utils.defaultColor()
         , showControls = true
-        , controlsPosition = 'top'        
+        , controlsPosition = 'top'
         , controlLabels = {}
         , showLegend = true
         , legendPosition = 'top'
@@ -10650,7 +10650,7 @@ nv.models.multiBarHorizontalChart = function() {
 
                     g.select('.nv-legendWrap')
                         .attr('transform', 'translate(' + controlWidth() + ',' + (-margin.top) +')');
-                }                    
+                }
             }
 
             // Controls
@@ -10670,13 +10670,13 @@ nv.models.multiBarHorizontalChart = function() {
                     g.select('.nv-controlsWrap')
                         .datum(controlsData)
                         .attr('transform', 'translate(0,' + (availableHeight + xAxis.height()) +')')
-                        .call(controls);  
+                        .call(controls);
 
                 } else if (controlsPosition === 'top') {
                     g.select('.nv-controlsWrap')
                         .datum(controlsData)
                         .attr('transform', 'translate(0,' + (-margin.top) +')')
-                        .call(controls);                        
+                        .call(controls);
                 }
             }
 
@@ -11086,7 +11086,7 @@ nv.models.multiChart = function() {
             var extraValue1BarStacked = [];
             if (bars1.stacked() && dataBars1.length) {
                 var extraValue1BarStacked = dataBars1.filter(function(d){return !d.disabled}).map(function(a){return a.values});
-                
+
                 if (extraValue1BarStacked.length > 0)
                     extraValue1BarStacked = extraValue1BarStacked.reduce(function(a,b){
                         return a.map(function(aVal,i){return {x: aVal.x, y: aVal.y + b[i].y}})
@@ -11095,11 +11095,11 @@ nv.models.multiChart = function() {
             if (dataBars1.length) {
                 extraValue1BarStacked.push({x:0, y:0});
             }
-            
+
             var extraValue2BarStacked = [];
             if (bars2.stacked() && dataBars2.length) {
                 var extraValue2BarStacked = dataBars2.filter(function(d){return !d.disabled}).map(function(a){return a.values});
-                
+
                 if (extraValue2BarStacked.length > 0)
                     extraValue2BarStacked = extraValue2BarStacked.reduce(function(a,b){
                         return a.map(function(aVal,i){return {x: aVal.x, y: aVal.y + b[i].y}})
@@ -11108,7 +11108,7 @@ nv.models.multiChart = function() {
             if (dataBars2.length) {
                 extraValue2BarStacked.push({x:0, y:0});
             }
-            
+
             yScale1 .domain(yDomain1 || d3.extent(d3.merge(series1).concat(extraValue1BarStacked), function(d) { return d.y } ))
                 .range([0, availableHeight]);
 
@@ -11790,10 +11790,10 @@ nv.models.parallelCoordinates = function() {
             if (active.length === 0) {
                 active = data;
             }; //set all active before first brush call
-            
+
             dimensionNames = dimensionData.sort(function (a, b) { return a.currentPosition - b.currentPosition; }).map(function (d) { return d.key });
             enabledDimensions = dimensionData.filter(function (d) { return !d.disabled; });
-            
+
             // Setup Scales
             x.rangePoints([0, availableWidth], 1).domain(enabledDimensions.map(function (d) { return d.key; }));
 
@@ -11802,7 +11802,7 @@ nv.models.parallelCoordinates = function() {
             var oldDomainMaxValue = {};
             var displayMissingValuesline = false;
             var currentTicks = [];
-            
+
             dimensionNames.forEach(function(d) {
                 var extent = d3.extent(dataValues, function (p) { return +p[d]; });
                 var min = extent[0];
@@ -11880,7 +11880,7 @@ nv.models.parallelCoordinates = function() {
                         .attr("y1", function(d) { return d[1]; })
                         .attr("x2", function(d) { return d[2]; })
                         .attr("y2", function(d) { return d[3]; });
-    
+
                 //Add the text "undefined values" under the missing value line
                 missingValueslineText = wrap.select('.missingValuesline').selectAll('text').data([undefinedValuesLabel]);
                 missingValueslineText.append('text').data([undefinedValuesLabel]);
@@ -11946,7 +11946,7 @@ nv.models.parallelCoordinates = function() {
                 .on("mouseover", function(d, i) {
                     dispatch.elementMouseover({
                         label: d.tooltip || d.key,
-                        color: d.color 
+                        color: d.color
                     });
                 })
                 .on("mouseout", function(d, i) {
@@ -12037,7 +12037,7 @@ nv.models.parallelCoordinates = function() {
                     if (visible)
                         y[f.dimension].brush.extent(f.extent);
                 });
-                
+
                 dimensions.select('.nv-brushBackground')
                     .each(function (d) {
                         d3.select(this).call(y[d.key].brush);
@@ -12046,10 +12046,10 @@ nv.models.parallelCoordinates = function() {
                     .selectAll('rect')
                     .attr('x', -8)
                     .attr('width', 16);
-                
+
                 updateTicks();
             }
-            
+
             // Handles a brush event, toggling the display of foreground lines.
             function brushstart() {
                 //If brush aren't visible, show it before brushing again.
@@ -12058,7 +12058,7 @@ nv.models.parallelCoordinates = function() {
                     restoreBrush(true);
                 }
             }
-            
+
             // Handles a brush event, toggling the display of foreground lines.
             function brush() {
                 actives = dimensionNames.filter(function (p) { return !y[p].brush.empty(); });
@@ -12083,9 +12083,9 @@ nv.models.parallelCoordinates = function() {
                     if (isActive) active.push(d);
                     return isActive ? null : 'none';
                 });
-                
+
                 updateTicks();
-                
+
                 dispatch.brush({
                     filters: filters,
                     active: active
@@ -12100,23 +12100,23 @@ nv.models.parallelCoordinates = function() {
                         f.hasOnlyNaN = true;
                 });
                 dispatch.brushEnd(active, hasActiveBrush);
-            }           
+            }
             function updateTicks() {
                 dimensions.select('.nv-axis')
                     .each(function (d, i) {
                         var f = filters.filter(function (k) { return k.dimension == d.key; });
                         currentTicks[d.key] = y[d.key].domain();
-                        
+
                         //If brush are available, display brush extent
                         if (f.length != 0 && displayBrush)
                         {
                             currentTicks[d.key] = [];
-                            if (f[0].extent[1] > y[d.key].domain()[0]) 
+                            if (f[0].extent[1] > y[d.key].domain()[0])
                                 currentTicks[d.key] = [f[0].extent[1]];
                             if (f[0].extent[0] >= y[d.key].domain()[0])
-                                currentTicks[d.key].push(f[0].extent[0]);    
+                                currentTicks[d.key].push(f[0].extent[0]);
                         }
-                            
+
                         d3.select(this).call(axis.scale(y[d.key]).tickFormat(d.format).tickValues(currentTicks[d.key]));
                 });
             }
@@ -12169,7 +12169,7 @@ nv.models.parallelCoordinates = function() {
         active: { get: function () { return active; }, set: function (_) { active = _; } },
         lineTension:   {get: function(){return lineTension;},     set: function(_){lineTension = _;}},
         undefinedValuesLabel : {get: function(){return undefinedValuesLabel;}, set: function(_){undefinedValuesLabel=_;}},
-        
+
         // deprecated options
         dimensions: {get: function () { return dimensionData.map(function (d){return d.key}); }, set: function (_) {
             // deprecated after 1.8.1
@@ -12189,7 +12189,7 @@ nv.models.parallelCoordinates = function() {
             } else {
                 _.forEach(function (k, i) { dimensionData[i].key = k })
             }
- 
+
         }},
         dimensionFormats: {get: function () { return dimensionData.map(function (d) { return d.format }); }, set: function (_) {
             // deprecated after 1.8.1
@@ -13610,7 +13610,7 @@ nv.models.sankeyChart = function() {
     };
     var color = d3.scale.category20();
     var linkTitle = function(d){
-        return d.source.name + ' → ' + d.target.name + '\n' + format(d.value);
+        return d.source.name + ' â†’ ' + d.target.name + '\n' + format(d.value);
     };
     var nodeFillColor = function(d){
         return d.color = color(d.name.replace(/ .*/, ''));

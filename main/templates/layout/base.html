@@ -32,6 +32,11 @@
         <link rel="stylesheet" href="{% static "plugins/jvectormap/jquery-jvectormap-1.2.2.css" %}">
         <!-- Theme style -->
         <link rel="stylesheet" href="{% static "dist/css/AdminLTE.min.css" %}">
+
+        <!-- nvd3 -->
+        <link href="{% static 'css/nv.d3.css' %}" rel="stylesheet" type="text/css">
+
+
         <!-- AdminLTE Skins. Choose a skin from the css/skins
              folder instead of downloading all of them to reduce the load. -->
         <link rel="stylesheet" href="{% static "dist/css/skins/_all-skins.min.css" %}">
@@ -88,10 +93,10 @@
     <script src="{% static "plugins/chartjs/Chart.min.js" %}"></script>
     <script src="{% static "parsley/js/parsley.min.js" %}" type="text/javascript" charset="utf-8"></script>
     <script src="{% static "moment/moment.js" %}" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript"
-            src="{% static "eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js" %}"></script>
+    <script src="{% static 'js/d3.min.js' %}" charset="utf-8"></script>
+    <script src="{% static 'js/nv.d3.js' %}"></script>
     <script src="{% static "js/script.js" %}" type="text/javascript" charset="utf-8"></script>
-
     {% block base_js %}
     {% endblock %}
 {% endcompress %}

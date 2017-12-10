@@ -1,8 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils import timezone
-
-
 
 
 class Leave(models.Model):
@@ -17,8 +14,8 @@ class Leave(models.Model):
     description = models.TextField(null=True, blank=True)
     submitted_date = models.DateTimeField(auto_now_add=True)
     estimated_time = models.DurationField(null=True, blank=True)
-    pickFrom = models.DateTimeField(default=timezone.now())
-    pickTo = models.DateTimeField(default=timezone.now())
+    pickFrom = models.DateTimeField(null=True, blank=True)
+    pickTo = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=2, default="PE",
                               choices=(("AP", "Approve"), ("DA", "Disapprove"), ("PE", "Pending"),))
     approved_by = models.ForeignKey(User,related_name='approved_by',null=True,blank=True)
