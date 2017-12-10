@@ -45,12 +45,20 @@ class Migration(migrations.Migration):
             name='status',
             field=models.CharField(choices=[('PL', 'Planning'), ('SP', 'Sprint'), ('RE', 'Release'), ('UA', 'UAT'), ('HO', 'Handover'), ('CL', 'Closed')], default='PL', max_length=2),
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='performance',
+            name='month',
+        )
+        migrations.AddField(
             model_name='performance',
             name='month',
             field=models.IntegerField(null=True),
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='performance',
+            name='year',
+        )
+        migrations.AddField(
             model_name='performance',
             name='year',
             field=models.IntegerField(null=True),
