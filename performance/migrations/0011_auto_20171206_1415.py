@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='performance',
             name='month',
-        )
+        ),
         migrations.AddField(
             model_name='performance',
             name='month',
@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='performance',
             name='year',
-        )
+        ),
         migrations.AddField(
             model_name='performance',
             name='year',
