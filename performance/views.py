@@ -183,7 +183,6 @@ def team_performance_dashboard(request, id=None):
     team_cost = team.team_cost_per_hour * team.project_length * 5 * 8
     project_budget = team.project_budget
 
-
     budget_performance = team_cost / project_budget
     bonus_value = 100 - budget_performance
     # project budget -------------end----------
