@@ -1,9 +1,1 @@
-# Personal assistant
-
-Base django project structure
-##Requirements:
-npm install bower
-
-gem install compass
-
-python manage.py bower_install
+# This repo moved to https://github.com/sitmena/sit-personal-assistant
